@@ -33,7 +33,7 @@ class BaseService:
         if self.get_response_body.header.status is None:
             self.get_response_body.header.status = 500
         if self.get_response_body.header.error_code is None:
-            self.get_response_body.header.error_code = 1000
+            self.get_response_body.header.error_code = 5000
         self.get_response_body.header.error_message = message
         self.get_response_body.header.time_taken = (datetime.now() - self.start_time).total_seconds()
         self.get_response_body.results = []

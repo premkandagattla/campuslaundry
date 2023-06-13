@@ -22,7 +22,7 @@ app.add_api(
 def handle_validation_error(exception):
     response_body = JsonSerializable()
     header = JsonSerializable()
-    header.error_code = 1000
+    header.error_code = 4000
     header.error_message = exception.detail
     header.status = exception.status
     header.rows_returned = 0

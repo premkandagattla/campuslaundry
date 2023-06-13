@@ -187,6 +187,7 @@ class MSSQL:
             cols = [d[0].lower() for d in cursor.description]
             result = []
             data = cursor.fetchall()
+            cursor.commit()
             for row in data:
                 for i, j in enumerate(row):
                     try:

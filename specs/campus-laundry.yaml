@@ -2,8 +2,8 @@ openapi: "3.0.0"
 
 info:
   version: 1.0.0
-  title: campus-laundry
-  description: campus-laundry description
+  title: Campus Laundry
+  description: campus laundry is a capstone project for helping students free from the laundry
 
 
 servers:
@@ -18,25 +18,6 @@ paths:
       responses:
         '200':
           description: Status message from server describing current health
-  /cl_get_all_employees:
-    get:
-      summary: GET Service to fetch data of employees
-      tags:
-        - cl_get_all_employees
-      description: |
-        ## get all employee's details
-        ---
-        ### parameters
-      operationId: api.cl_get_all_employees.get
-      responses:
-        '200':
-          description: get user details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/cl_get_all_employees_result'
-        'default':
-          description: unexpected error
   /cl_get_customer_login:
     post:
       summary: customer login verification
@@ -53,6 +34,15 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/cl_get_customer_login_input_body'
+            examples:
+              Test Example 1:
+                value:
+                  email: "test@test.com"
+                  password: "Test#123"
+              Test Example 2:
+                value:
+                  email: "test@example.com"
+                  password: "test#123"
       responses:
         '200':
           description: login verification
@@ -60,11 +50,70 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/cl_get_customer_login'
+              examples:
+                example1:
+                  summary: Login Successful
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.74
+                    results:
+                      [{
+                         query_status: true,
+                         message: "Login successful",
+                         customer_id: 1
+                      }]
+                example2:
+                  summary: Incorrect Password
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.28
+                    results:
+                      [{
+                         query_status: false,
+                         message: "Incorrect password",
+                         customer_id: 0
+                      }]
+                example3:
+                  summary: Email not found
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results:
+                      [{
+                         query_status: false,
+                         message: "Email not found",
+                         customer_id: 0
+                      }]
+                    
+        '400':
+          description: BAD Request for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+        '500':
+          description: Internal Server for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server'
         'default':
           description: unexpected error
   /cl_set_customer_registration:
-    get:
-      summary: GET Service to fetch data of employees
+    post:
+      summary: Set Service to save customer information
       tags:
         - cl_set_customer_registration
       description: |
@@ -72,13 +121,90 @@ paths:
         ---
         ### parameters
       operationId: api.cl_set_customer_registration.post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/cl_set_customer_registration_input_body'
+            examples:
+              Test Example 1:
+                value:
+                  first_name: "Test Name"
+                  last_name: "Test Name"
+                  email: "test@test.com"
+                  password: "test#123"
+              Test Example 2:
+                value:
+                  first_name: "Test Name 2"
+                  last_name: "Test Name 2"
+                  email: "test@example.com"
+                  password: "test@123"
       responses:
         '200':
-          description: get user details
+          description: save customer registration information
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/cl_get_all_employees_result'
+                $ref: '#/components/schemas/cl_set_customer_registration'
+              examples:
+                example1:
+                  summary: Registration Successful
+                  value:
+                    header:
+                      value:
+                        error_code: 0
+                        error_message: ""
+                        status: 200
+                        rows_returned: 1
+                        time_taken: 0.74
+                    results:
+                      [ {
+                        query_status: true,
+                        message: "Registration Successful"
+                      }]
+                example2:
+                  summary: User Already exists
+                  value:
+                    header:
+                      value:
+                        error_code: 0
+                        error_message: ""
+                        status: 200
+                        rows_returned: 1
+                        time_taken: 0.46
+                    results:
+                      [ {
+                        query_status: false,
+                        message: "Customer already exists"
+                      }]
+                example3:
+                  summary: Error Inserting Data
+                  value:
+                    header:
+                      value:
+                        error_code: 0
+                        error_message: ""
+                        status: 200
+                        rows_returned: 1
+                        time_taken: 0.65
+                    results:
+                      [{
+                        query_status: false,
+                        message: "Something went wrong while inserting data"
+                      }]
+        '400':
+          description: BAD Request for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+        '500':
+          description: Internal Server for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server'
         'default':
           description: unexpected error
 
@@ -102,21 +228,57 @@ components:
         time_taken:
           type: number
           description: total time taken for the operation
-          
-    cl_get_all_employees_result:
+    
+    bad_request:
       type: object
       properties:
+        header:
+          type: object
+          properties:
+            error_code:
+              type: integer
+              default: 4000
+            error_message:
+              type: string
+              default: ""
+            rows_returned:
+              type: integer
+              default: 0
+            status:
+              type: integer
+              default: 400
+            time_taken:
+              type: number
         results:
           type: array
-          items:
-            $ref: '#/components/schemas/cl_get_all_employees_response_results'
-    cl_get_all_employees_response_results:
+          default: []
+          
+    
+    internal_server:
       type: object
       properties:
-        first_name:
-          type: string
-        last_name:
-          type: string
+        header:
+          type: object
+          properties:
+            error_code:
+              type: integer
+              default: 5000
+            error_message:
+              type: string
+              default: "Something went wrong !!!"
+            status:
+              type: integer
+              default: 500
+            rows_returned:
+              type: integer
+            time_taken:
+              type: number
+              default: 0
+        results:
+          type: array
+          default: []
+      
+    
     cl_get_customer_login_input_body:
       type: object
       properties:
@@ -124,11 +286,14 @@ components:
           type: string
           format: email
           pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
+          default: "test@test.com"
         password:
           type: string
+          default: "Test#123"
       required:
         - email
         - password
+    
     cl_get_customer_login:
       type: object
       properties:
@@ -138,12 +303,61 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/cl_get_customer_login_results'
+    
     cl_get_customer_login_results:
       type: object
       properties:
-        login_status:
+        query_status:
           type: boolean
+          default: true
         message:
           type: string
+          default: "Login successful"
         customer_id:
           type: integer
+          default: 1
+    
+    cl_set_customer_registration_input_body:
+      type: object
+      properties:
+        first_name:
+          type: string
+          pattern: ^[a-zA-Z ]+$
+          default: "Test Name"
+        last_name:
+          type: string
+          pattern: ^[a-zA-Z ]+$
+          default: "Test Name"
+        email:
+          type: string
+          format: email
+          pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
+          default: "test@test.com"
+        password:
+          type: string
+          default: "Test#123"
+      required:
+        - first_name
+        - last_name
+        - email
+        - password
+
+    cl_set_customer_registration:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/cl_set_customer_registration_results'
+
+    cl_set_customer_registration_results:
+      type: object
+      properties:
+        query_status:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: "Registration successful"
