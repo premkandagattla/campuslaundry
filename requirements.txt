@@ -1,0 +1,11 @@
+Flask==2.2.3
+connexion[swagger-ui]
+Flask-Injector
+pycryptodome
+pyodbc
+ConfigParser
+xmltodict
+python-dateutil
+defusedxml
+mysql-connector-python
+python-dotenv

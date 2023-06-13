@@ -1,0 +1,149 @@
+openapi: "3.0.0"
+
+info:
+  version: 1.0.0
+  title: campus-laundry
+  description: campus-laundry description
+
+
+servers:
+  - url: /campus-laundry
+
+
+paths:
+  /health:
+    get:
+      summary: Health Check of the services
+      operationId: api.health.get
+      responses:
+        '200':
+          description: Status message from server describing current health
+  /cl_get_all_employees:
+    get:
+      summary: GET Service to fetch data of employees
+      tags:
+        - cl_get_all_employees
+      description: |
+        ## get all employee's details
+        ---
+        ### parameters
+      operationId: api.cl_get_all_employees.get
+      responses:
+        '200':
+          description: get user details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/cl_get_all_employees_result'
+        'default':
+          description: unexpected error
+  /cl_get_customer_login:
+    post:
+      summary: customer login verification
+      tags:
+        - cl_get_customer_login
+      description: |
+        ## Customer login verification
+        ---
+        ### parameters
+      operationId: api.cl_get_customer_login.post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/cl_get_customer_login_input_body'
+      responses:
+        '200':
+          description: login verification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/cl_get_customer_login'
+        'default':
+          description: unexpected error
+  /cl_set_customer_registration:
+    get:
+      summary: GET Service to fetch data of employees
+      tags:
+        - cl_set_customer_registration
+      description: |
+        ## Saving New Customer Details into database
+        ---
+        ### parameters
+      operationId: api.cl_set_customer_registration.post
+      responses:
+        '200':
+          description: get user details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/cl_get_all_employees_result'
+        'default':
+          description: unexpected error
+
+components:
+  schemas:
+    result_headers:
+      type: object
+      properties:
+        error_code:
+          type: integer
+          description: custom application error code
+        error_message:
+          type: string
+          description: custom application error message
+        rows_returned:
+          type: integer
+          description: total number of rows returned from database
+        status:
+          type: integer
+          description: status code of the operation
+        time_taken:
+          type: number
+          description: total time taken for the operation
+          
+    cl_get_all_employees_result:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/cl_get_all_employees_response_results'
+    cl_get_all_employees_response_results:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+    cl_get_customer_login_input_body:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
+        password:
+          type: string
+      required:
+        - email
+        - password
+    cl_get_customer_login:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/cl_get_customer_login_results'
+    cl_get_customer_login_results:
+      type: object
+      properties:
+        login_status:
+          type: boolean
+        message:
+          type: string
+        customer_id:
+          type: integer
