@@ -32,7 +32,7 @@ class CLSetCustomerRegistration(BaseService):
             input_dict = self.get_input_dict()
             for key, value in input_params.items():
                 if key in input_dict:
-                    if key == 'password':
+                    if key == 'password' and len(input_dict[key]) > 0:
                         params_list.append(aes.encrypt(input_dict[key]))
                     else:
                         params_list.append(input_dict[key])

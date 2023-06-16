@@ -285,10 +285,12 @@ components:
         email:
           type: string
           format: email
+          minLength: 1
           pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
           default: "test@test.com"
         password:
           type: string
+          minLength: 1
           default: "Test#123"
       required:
         - email
@@ -322,19 +324,23 @@ components:
       properties:
         first_name:
           type: string
+          minLength: 1
           pattern: ^[a-zA-Z ]+$
           default: "Test Name"
         last_name:
           type: string
+          minLength: 1
           pattern: ^[a-zA-Z ]+$
           default: "Test Name"
         email:
           type: string
           format: email
+          minLength: 1
           pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
           default: "test@test.com"
         password:
           type: string
+          minLength: 1
           default: "Test#123"
       required:
         - first_name
