@@ -16,7 +16,7 @@ class CLGetAllEmployeesData:
         :return:
         """
         return_val = dict()
-        cnx = None
+        conn = None
         try:
             conn = MSSQL.connect()
 

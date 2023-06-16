@@ -9,3 +9,9 @@ python-dateutil
 defusedxml
 mysql-connector-python
 python-dotenv
+pytest
+mock
+autopep8
+coverage
+pytest-cov
+pytest-html
