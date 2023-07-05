@@ -493,6 +493,7 @@ paths:
           description: unexpected error
       
       
+  
   /cl_get_customer_address:
     post:
       summary: Get Customer Address List
@@ -553,6 +554,87 @@ paths:
                       rows_returned: 1
                       time_taken: 0.12
                     results: []
+        '400':
+          description: BAD Request for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+        '500':
+          description: Internal Server for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server'
+        'default':
+          description: unexpected error
+          
+  /cl_set_customer_address_inactive:
+    post:
+      summary: Set Customer Address Inactive
+      tags:
+        - cl_set_customer_address_inactive
+      description: |
+        ## Set Customer Address Inactive
+        ---
+        ### parameters
+    
+      operationId: api.cl_set_customer_address_inactive.post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/set_customer_address_inactive_input'
+            examples:
+              Test Example 1:
+                summary: Set Customer Address Inactive
+                value:
+                  customer_id: 2
+                  address_id: 1
+              Test Example 2:
+                summary: Address Not Found
+                value:
+                  customer_id: 1
+                  address_id: 1
+      responses:
+        '200':
+          description: Set Customer Address Inactive
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/set_customer_address_inactive'
+              examples:
+                example1:
+                  summary: Set Customer Address Inactive
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: [
+                      {
+                        "message": "Address inactivated successfully",
+                        "query_status": true
+                      }
+                    ]
+                example2:
+                  summary: Customer Address Not Found
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: [
+                      {
+                        "message": "Address not found",
+                        "query_status": false
+                      }
+                    ]
         '400':
           description: BAD Request for Input
           content:
@@ -919,7 +1001,31 @@ components:
           type: string
         postal_code:
           type: string
+          
+    # Customer Address Inactive
+    
+    set_customer_address_inactive_input:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+        address_id:
+          type: integer
+      required:
+        - customer_id
+        - address_id
 
+    set_customer_address_inactive:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/set_customer_address_inactive_results'
 
-  
+    set_customer_address_inactive_results:
+      type: object
+
     
