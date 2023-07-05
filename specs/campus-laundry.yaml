@@ -285,6 +285,8 @@ paths:
         'default':
           description: unexpected error
           
+          
+  
   # Customer Information Section
   /cl_get_customer_details:
     post:
@@ -524,6 +526,8 @@ components:
       properties:
         wash:
           type: boolean
+      required:
+        - wash
     
     laundry_items:
       type: object
@@ -562,6 +566,9 @@ components:
           minLength: 1
           pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
           default: "test@test.com"
+      required:
+        - email
+    
     customer_details:
       type: object
       properties:
@@ -571,6 +578,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/customer_details_results'
+    
     customer_details_results:
       type: object
       properties:
@@ -591,4 +599,5 @@ components:
           maximum: 1
           nullable: true
 
+  
     
