@@ -1027,5 +1027,10 @@ components:
 
     set_customer_address_inactive_results:
       type: object
+      properties:
+        query_status:
+          type: boolean
+        message:
+          type: string
 
     
