@@ -7,7 +7,7 @@ import pyodbc
 from common import aes
 from common.constants import log_err_message
 from common.configparser_lib import ConfigReader
-from datetime import datetime
+from datetime import datetime, date
 from dotenv import dotenv_values
 
 env_values = dotenv_values(".env")
@@ -87,7 +87,7 @@ class MSSQL:
                     try:
                         if isinstance(j, memoryview):
                             row[i] = str(uuid.UUID(bytes_le=str(j)))
-                        elif type(j) == datetime:
+                        elif type(j) == datetime or type(j) == date:
                             row[i] = j.isoformat()
                         elif type(j) == bytearray:
                             row[i] = str(uuid.UUID(bytes_le=str(j)))

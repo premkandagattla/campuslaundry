@@ -31,10 +31,10 @@ class JsonSerializable(object):
         try:
             return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True).replace("\\\"", '')
         except Exception as e:
-            raise Exception("Error Serializing JSOn " + e.message)
+            raise Exception("Error Serializing JSOn " + str(e))
 
     def to_dec_encoder(self, result):
         try:
             return json.dumps(result, cls=DecEncoder)
         except Exception as e:
-            raise Exception("Error Serializing JSOn " + e.message)
+            raise Exception("Error Serializing JSOn " + str(e))
