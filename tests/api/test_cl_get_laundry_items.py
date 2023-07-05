@@ -1,10 +1,9 @@
 import pytest
 import mock
 from mock import patch
+from common.constants import RESULTS, MESSAGE, ERROR_CODE
 from common.mssql import MSSQL
-from api.cl_get_customer_login import post, CLGetCustomerLogin
-
-input_params = {'email': 1001, 'password': 1002}
+from api.cl_get_laundry_items import post, CLGetLaundryItems
 
 
 @pytest.fixture
@@ -27,30 +26,19 @@ def mock_mssql_execute_sp_with_columns():
 
 @pytest.fixture
 def mock_class():
-    with patch("api.cl_get_customer_login.CLGetCustomerLogin") as mock_class:
+    with patch("api.cl_get_laundry_items.CLGetLaundryItems") as mock_class:
         yield mock_class
 
 
-@pytest.fixture
-def mock_aes_encrypt():
-    """
-    Mocks the aes.encrypt() function
-    """
-    with patch("common.aes.encrypt") as mock_encrypt:
-        yield mock_encrypt
-
-
 def test_get_with_class(mock_class):
-
-    results = [("John Doe", "john.doe@example.com")]
-
+    rows = [("John", "Doe"), ("Jane", "Smith")]
     mock_instance = mock_class.return_value
-    mock_instance.execute_call.return_value = results
+    mock_instance.execute_call.return_value = rows
 
-    # Call the post() function
+    # Call the get() function
     result = post()
 
     # Assert the expected result
-    assert result == results
+    assert result == rows
 
 

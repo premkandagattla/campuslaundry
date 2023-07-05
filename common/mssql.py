@@ -182,8 +182,11 @@ class MSSQL:
         try:
             cursor = conn.cursor()
 
-            cursor.execute("{CALL " + store_proc + "(" + ",".join(["?"] * len(params)) + ")}",
-                           params)
+            if len(params) > 0:
+                cursor.execute("{CALL " + store_proc + "(" + ",".join(["?"] * len(params)) + ")}",
+                               params)
+            else:
+                cursor.execute("{CALL " + store_proc + "}")
             cols = [d[0].lower() for d in cursor.description]
             result = []
             data = cursor.fetchall()

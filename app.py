@@ -37,8 +37,15 @@ app.add_error_handler(BadRequestProblem, handle_validation_error)
 
 
 @app.route("/")
+@app.route("/campus-laundry")
+@app.route("/campus-laundry/")
 def home():
     return render_template('home.html')
+
+#
+# @app.route("/campus-laundry")
+# def campus():
+#     return render_template('home.html')
 
 
 application = app.app

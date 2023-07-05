@@ -18,6 +18,7 @@ paths:
       responses:
         '200':
           description: Status message from server describing current health
+          
   /cl_get_customer_login:
     post:
       summary: customer login verification
@@ -33,7 +34,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/cl_get_customer_login_input_body'
+              $ref: '#/components/schemas/login_input'
             examples:
               Test Example 1:
                 value:
@@ -49,7 +50,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/cl_get_customer_login'
+                $ref: '#/components/schemas/login'
               examples:
                 example1:
                   summary: Login Successful
@@ -111,6 +112,7 @@ paths:
                 $ref: '#/components/schemas/internal_server'
         'default':
           description: unexpected error
+          
   /cl_set_customer_registration:
     post:
       summary: Set Service to save customer information
@@ -126,7 +128,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/cl_set_customer_registration_input_body'
+              $ref: '#/components/schemas/registration_input'
             examples:
               Test Example 1:
                 value:
@@ -146,7 +148,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/cl_set_customer_registration'
+                $ref: '#/components/schemas/registration'
               examples:
                 example1:
                   summary: Registration Successful
@@ -207,9 +209,153 @@ paths:
                 $ref: '#/components/schemas/internal_server'
         'default':
           description: unexpected error
+          
+  
+  /cl_get_laundry_items:
+    post:
+      summary: laundry dry clean prices
+      tags:
+        - cl_get_laundry_items
+      description: |
+        ## Laundry Product Prices
+        ---
+        ### parameters
+      operationId: api.cl_get_laundry_items.post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/laundry_items_input'
+            examples:
+              Test Example 1:
+                summary: Wash Items
+                value:
+                  wash: true
+              Test Example 2:
+                summary: Dry Clean Items
+                value:
+                  wash: false
+      responses:
+        '200':
+          description: Successful list of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/laundry_items'
+              examples:
+                example1:
+                  summary: successful data retrieval
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results:
+                      [
+                        {
+                          "price": 8.05,
+                          "product_fabric": "Cotton",
+                          "product_id": 1,
+                          "product_name": "T-Shirt"
+                        },
+                        {
+                          "price": 6.25,
+                          "product_fabric": "Polyester",
+                          "product_id": 2,
+                          "product_name": "T-Shirt"
+                        }
+                      ]
+                    
+              
+        '400':
+          description: BAD Request for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+        '500':
+          description: Internal Server for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server'
+        'default':
+          description: unexpected error
+          
+  # Customer Information Section
+  /cl_get_customer_details:
+    post:
+      summary: Customer Information
+      tags:
+        - cl_get_customer_details
+      description: |
+        ## Customer Details
+        ---
+        ### parameters
+        - email
+      operationId: api.cl_get_customer_details.post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/customer_details_input'
+            examples:
+              Test Example 1:
+                summary: Customer Information
+                value:
+                  email: test@test.com
+      responses:
+        '200':
+          description: Customer Information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customer_details'
+              examples:
+                example1:
+                  summary: successful data retrieval
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results:
+                      [
+                        {
+                          "customer_id": 2,
+                          "first_name": "test",
+                          "last_name": 1,
+                          "date_of_birth": null,
+                          "gender": null
+                        }
+                      ]
+        '400':
+          description: BAD Request for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+        '500':
+          description: Internal Server for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server'
+        'default':
+          description: unexpected error
+      
+  
 
 components:
   schemas:
+    # Common Schemas
+    
     result_headers:
       type: object
       properties:
@@ -278,8 +424,10 @@ components:
           type: array
           default: []
       
+      
+    # login Section
     
-    cl_get_customer_login_input_body:
+    login_input:
       type: object
       properties:
         email:
@@ -296,7 +444,7 @@ components:
         - email
         - password
     
-    cl_get_customer_login:
+    login:
       type: object
       properties:
         header:
@@ -304,9 +452,9 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/cl_get_customer_login_results'
+            $ref: '#/components/schemas/login_results'
     
-    cl_get_customer_login_results:
+    login_results:
       type: object
       properties:
         query_status:
@@ -318,8 +466,10 @@ components:
         customer_id:
           type: integer
           default: 1
+          
+    # Registration Section
     
-    cl_set_customer_registration_input_body:
+    registration_input:
       type: object
       properties:
         first_name:
@@ -348,7 +498,7 @@ components:
         - email
         - password
 
-    cl_set_customer_registration:
+    registration:
       type: object
       properties:
         header:
@@ -356,9 +506,9 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/cl_set_customer_registration_results'
+            $ref: '#/components/schemas/registration_results'
 
-    cl_set_customer_registration_results:
+    registration_results:
       type: object
       properties:
         query_status:
@@ -367,3 +517,78 @@ components:
         message:
           type: string
           default: "Registration successful"
+    
+    # Laundry Dry Clean Prices
+    laundry_items_input:
+      type: object
+      properties:
+        wash:
+          type: boolean
+    
+    laundry_items:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/laundry_items_results'
+    
+    laundry_items_results:
+      type: object
+      properties:
+        product_id:
+          type: integer
+        product_name:
+          type: string
+        product_fabric:
+          type: string
+          nullable: true
+        price:
+          type: number
+          nullable: true
+        
+        
+        
+    # Customer Information Section
+
+    customer_details_input:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+          pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
+          default: "test@test.com"
+    customer_details:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/customer_details_results'
+    customer_details_results:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        date_of_birth:
+          type: string
+          nullable: true
+        gender:
+          type: string
+          minimum: 1
+          maximum: 1
+          nullable: true
+
+    

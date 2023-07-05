@@ -7,7 +7,7 @@ from datetime import datetime
 class BaseService:
     def __init__(self):
         self.start_time = datetime.now()
-        self.input_data = connexion.request.get_json(force=True)
+        self.input_data = connexion.request.get_json(force=True) if connexion.request.is_json else dict()
         self.get_response_body = JsonSerializable()
         header = JsonSerializable()
         header.error_code = None

@@ -1,20 +1,16 @@
-from common import aes
 from common.base_service import BaseService
 from common.mssql import MSSQL
 
-input_params = {'first_name': 1003,
-                'last_name': 1004,
-                'email': 1001,
-                'password': 1002
-                }
+input_params = {'wash': 2001}
 
 
 def post():
-    service_info = CLSetCustomerRegistration()
+    service_info = CLGetLaundryItems()
     return service_info.execute_call()
 
 
-class CLSetCustomerRegistration(BaseService):
+class CLGetLaundryItems(BaseService):
+
     def __init__(self):
         super().__init__()
 
@@ -28,22 +24,15 @@ class CLSetCustomerRegistration(BaseService):
         status_code = None
         conn = None
         params_list = []
+        conn = None
         try:
             input_dict = self.get_input_dict()
             for key, value in input_params.items():
-                if key in input_dict:
-                    if key == 'password' and len(input_dict[key]) > 0:
-                        params_list.append(aes.encrypt(input_dict[key]))
-                    else:
-                        params_list.append(input_dict[key])
-                else:
-                    self.get_response_body.header.error_code = value
-                    self.get_response_body.header.status = 400
-                    raise Exception(f'Invalid input parameter: {key}')
+                params_list.append(input_dict[key])
 
             conn = MSSQL.connect()
 
-            sp = '[dbo].[usp_set_customer_registration]'
+            sp = "[dbo].[usp_get_laundry_items]"
 
             results = MSSQL.execute_sp_with_columns(conn, sp, params_list)
             self.get_response_body.results = results
@@ -55,4 +44,3 @@ class CLSetCustomerRegistration(BaseService):
             if conn is not None:
                 conn.close()
         return return_val, status_code
-
