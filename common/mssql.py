@@ -93,6 +93,8 @@ class MSSQL:
                             row[i] = str(uuid.UUID(bytes_le=str(j)))
                     except Exception as e:
                         row[i] = None
+                    print('----------Test result')
+                    print(row[i], type(row[i]))
             for rs in fetch_result:
                 zip_data = dict(zip(cols, rs))
                 data.append(zip_data)
