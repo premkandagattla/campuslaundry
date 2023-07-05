@@ -19,6 +19,7 @@ paths:
         '200':
           description: Status message from server describing current health
           
+  
   /cl_get_customer_login:
     post:
       summary: customer login verification
@@ -113,6 +114,7 @@ paths:
         'default':
           description: unexpected error
           
+  
   /cl_set_customer_registration:
     post:
       summary: Set Service to save customer information
@@ -351,8 +353,222 @@ paths:
                 $ref: '#/components/schemas/internal_server'
         'default':
           description: unexpected error
-      
   
+  /cl_set_customer_address:
+    post:
+      summary: Update Customer Address
+      tags:
+        - cl_set_customer_address
+      description: |
+        ## Update Customer Address
+        ---
+        ### parameters
+        
+      operationId: api.cl_set_customer_address.post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/set_customer_address_input'
+            examples:
+              Test Example 1:
+                summary: Customer Add New Address
+                value:
+                  customer_id: 2
+                  street: '108 University Ave E'
+                  city: 'waterloo'
+                  province: 'ontario'
+                  postal_code: 'N2K 0H4'
+                  country: 'Canada'
+                  latitude: -80.51752
+                  longitude: 43.47886
+                  address_id: 1
+              Test Example 2:
+                summary: Customer & Address IDs Mismatched
+                value:
+                  customer_id: 1
+                  street: '108 University Ave E'
+                  city: 'waterloo'
+                  province: 'ontario'
+                  postal_code: 'N2K 0H4'
+                  country: 'Canada'
+                  latitude: -80.51752
+                  longitude: 43.47886
+                  address_id: 2
+              Test Example 3:
+                summary: Invalid Address Id
+                value:
+                  customer_id: 1
+                  street: '108 University Ave E'
+                  city: 'waterloo'
+                  province: 'ontario'
+                  postal_code: 'N2K 0H4'
+                  country: 'Canada'
+                  latitude: -80.51752
+                  longitude: 43.47886
+                  address_id: 1221092
+      responses:
+        '200':
+          description: Customer Update Address
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/set_customer_address'
+              examples:
+                example1:
+                  summary: Create Address
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: [
+                        {
+                          "message": "Successfully Created Address",
+                          "query_status": true
+                        }
+                      ]
+                example2:
+                  summary: Update Address
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: [
+                        {
+                          "message": "Successfully Updated Address",
+                          "query_status": true
+                        }
+                      ]
+                example3:
+                  summary: Customer & Address Ids Mismatched
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: [
+                      {
+                        "message": "Address id and customer id mismatch",
+                        "query_status": false
+                      }
+                    ]
+                example4:
+                  summary: Invalid Address Id
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: [
+                      {
+                        "message": "Invalid Address Id",
+                        "query_status": false
+                      }
+                    ]
+                    
+        '400':
+          description: BAD Request for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+        '500':
+          description: Internal Server for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server'
+        'default':
+          description: unexpected error
+      
+      
+  /cl_get_customer_address:
+    post:
+      summary: Get Customer Address List
+      tags:
+        - cl_get_customer_address
+      description: |
+        ## Get Customer Address
+        ---
+        ### parameters
+    
+      operationId: api.cl_get_customer_address.post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/get_customer_address_input'
+            examples:
+              Test Example 1:
+                summary: Get Customer Address
+                value:
+                  customer_id: 2
+      responses:
+        '200':
+          description: Get Customer Address
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get_customer_address'
+              examples:
+                example1:
+                  summary: Customer Address List
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: [
+                        {
+                          "address_id": 1,
+                          "city": "waterloo",
+                          "country": "Canada",
+                          "customer_id": 2,
+                          "postal_code": "N2K 0H4",
+                          "province": "ontario",
+                          "street": "108 University Ave E"
+                        }
+                      ]
+                example2:
+                  summary: Empty Customer Address List
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: []
+        '400':
+          description: BAD Request for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+        '500':
+          description: Internal Server for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server'
+        'default':
+          description: unexpected error
+
+
 
 components:
   schemas:
@@ -469,6 +685,7 @@ components:
           type: integer
           default: 1
           
+    
     # Registration Section
     
     registration_input:
@@ -521,6 +738,7 @@ components:
           default: "Registration successful"
     
     # Laundry Dry Clean Prices
+    
     laundry_items_input:
       type: object
       properties:
@@ -555,6 +773,7 @@ components:
         
         
         
+   
     # Customer Information Section
 
     customer_details_input:
@@ -598,6 +817,109 @@ components:
           minimum: 1
           maximum: 1
           nullable: true
+          
+    
+    # Customer Set Address
+    
+    set_customer_address_input:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+          default: 2
+        street:
+          type: string
+          default: '108 University Ave E'
+        city:
+          type: string
+          default: 'waterloo'
+        province:
+          type: string
+          default: 'ontario'
+        postal_code:
+          type: string
+          default: 'N2K 0H4'
+        country:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        address_id:
+          type: integer
+          nullable: true
+      required:
+        - customer_id
+        - street
+        - city
+        - province
+        - postal_code
+        - country
+        - latitude
+        - longitude
+          
+          
+    
+    set_customer_address:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/set_customer_address_results'
+    
+    set_customer_address_results:
+      type: object
+      properties:
+        query_status:
+          type: boolean
+        message:
+          type: string
+      
+      
+      
+    
+    # Customer Get Address
+    
+    get_customer_address_input:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+          default: 2
+      required:
+        - customer_id
+  
+    get_customer_address:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/get_customer_address_results'
+
+    get_customer_address_results:
+      type: object
+      properties:
+        address_id:
+          type: integer
+        customer_id:
+          type: integer
+        street:
+          type: string
+        city:
+          type: string
+        province:
+          type: string
+        country:
+          type: string
+        postal_code:
+          type: string
+
 
   
     
