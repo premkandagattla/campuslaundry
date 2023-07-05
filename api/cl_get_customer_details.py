@@ -2,9 +2,8 @@ from common.base_service import BaseService
 from common.mssql import MSSQL
 
 input_params = {
-                'email': 1001,
-
-                }
+    'email': 1001,
+}
 
 
 def post():
@@ -31,7 +30,12 @@ class CLGetCustomerDetails(BaseService):
         try:
             input_dict = self.get_input_dict()
             for key, value in input_params.items():
-                params_list.append(input_dict[key])
+                if key in input_dict:
+                    params_list.append(input_dict[key])
+                else:
+                    self.get_response_body.header.error_code = value
+                    self.get_response_body.header.status = 400
+                    raise Exception(f'Invalid input parameter: {key}')
 
             conn = MSSQL.connect()
 

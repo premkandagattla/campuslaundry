@@ -1,10 +1,10 @@
 from common.base_service import BaseService
 from common.mssql import MSSQL
+from collections import OrderedDict
 
-input_params = {
-    'customer_id': 1007,
-    'address_id': 1015
-}
+input_params = OrderedDict()
+input_params['customer_id'] = 1007
+input_params['address_id'] = 1015
 
 
 def post():

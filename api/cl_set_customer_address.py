@@ -1,17 +1,19 @@
 from common.base_service import BaseService
 from common.mssql import MSSQL
 
-input_params = {
-    'customer_id': 1007,
-    'street': 1008,
-    'city': 1009,
-    'province': 1010,
-    'postal_code': 1011,
-    'country': 1012,
-    'latitude': 1013,
-    'longitude': 1014,
-    'address_id': 1015,
-}
+from collections import OrderedDict
+
+input_params = OrderedDict()
+
+input_params['customer_id'] = 1007
+input_params['street'] = 1008
+input_params['city'] = 1009
+input_params['province'] = 1010
+input_params['postal_code'] = 1011
+input_params['country'] = 1012
+input_params['latitude'] = 1013
+input_params['longitude'] = 1014
+input_params['address_id'] = 1015
 
 
 def post():

@@ -569,6 +569,7 @@ paths:
         'default':
           description: unexpected error
           
+  
   /cl_set_customer_address_inactive:
     post:
       summary: Set Customer Address Inactive
@@ -649,7 +650,108 @@ paths:
                 $ref: '#/components/schemas/internal_server'
         'default':
           description: unexpected error
+          
+          
 
+  /cl_set_customer_order:
+    post:
+      summary: Create Customer Order
+      tags:
+        - cl_set_customer_order
+      description: |
+        ## Set Customer Order
+        ---
+        ### parameters
+    
+      operationId: api.cl_set_customer_order.post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/set_customer_order_input'
+            examples:
+              Test Example 1:
+                summary: Set Customer Order
+                value:
+                  customer_id: 2
+                  items_count: 1
+                  total_price: 5.65
+                  laundry_type: 'wash'
+                  laundry_items: [{
+                    product_id: 1,
+                    quantity: 1,
+                    price: 5
+                  }]
+                  order_weight: 10
+              Test Example 2:
+                summary: Set Customer Order  Not Found
+                value:
+                  customer_id: 2
+                  items_count: 1
+                  total_price: 5.65
+                  laundry_type: 'wash'
+                  laundry_items: [ {
+                    product_id: 1,
+                    quantity: 1,
+                    price: 5
+                  } ]
+                  order_weight: 10
+                  order_id: 20121232
+      responses:
+        '200':
+          description: Customer Order Created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/set_customer_address_inactive'
+              examples:
+                example1:
+                  summary: Order Created successfully
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: [
+                      {
+                        "message": "Order Created Successfully",
+                        "query_status": true,
+                        "order_id": 1
+                      }
+                    ]
+                example2:
+                  summary: Order Id and Customer Id mismatched
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 143.22
+                    results: [
+                      {
+                        "message": "order id and customer id is mismatch",
+                        "order_id": null,
+                        "query_status": false
+                      }
+                    ]
+        '400':
+          description: BAD Request for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+        '500':
+          description: Internal Server for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server'
+        'default':
+          description: unexpected error
 
 
 components:
@@ -725,6 +827,7 @@ components:
           default: []
       
       
+    
     # login Section
     
     login_input:
@@ -766,6 +869,7 @@ components:
         customer_id:
           type: integer
           default: 1
+          nullable: true
           
     
     # Registration Section
@@ -1032,5 +1136,76 @@ components:
           type: boolean
         message:
           type: string
+          
+    # Customer Create Order
+    
+    set_customer_order_input:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+        items_count:
+          type: integer
+        total_price:
+          type: number
+        laundry_type:
+          type: string
+        laundry_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/order_laundry_items'
+        order_weight:
+          type: number
+          nullable: true
+        subscribed_id:
+          type: integer
+          nullable: true
+        order_id:
+          type: integer
+          nullable: true
+      required:
+        - customer_id
+        - items_count
+        - total_price
+        - laundry_type
+        - laundry_items
+        - order_weight
+    
+    order_laundry_items:
+      type: object
+      properties:
+        product_id:
+          type: integer
+        quantity:
+          type: integer
+        price:
+          type: number
+      required:
+        - product_id
+        - quantity
+        - price
+        
+    
+    set_customer_order:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/set_customer_order_results'
+    
+    set_customer_order_results:
+      type: object
+      properties:
+        query_status:
+          type: boolean
+        message:
+          type: string
+        order_id:
+          type: integer
+          nullable: true
+      
 
     

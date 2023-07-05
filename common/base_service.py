@@ -35,6 +35,7 @@ class BaseService:
         if self.get_response_body.header.error_code is None:
             self.get_response_body.header.error_code = 5000
         self.get_response_body.header.error_message = message
+        self.get_response_body.header.rows_returned = 0
         self.get_response_body.header.time_taken = (datetime.now() - self.start_time).total_seconds()
         self.get_response_body.results = []
         return json.loads(self.get_response_body.to_json()), self.get_response_body.header.status

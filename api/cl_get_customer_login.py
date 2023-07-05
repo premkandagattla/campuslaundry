@@ -2,7 +2,11 @@ from common import aes
 from common.base_service import BaseService
 from common.mssql import MSSQL
 
-input_params = {'email': 1001, 'password': 1002}
+from collections import OrderedDict
+
+input_params = OrderedDict()
+input_params['email'] = 1001
+input_params['password'] = 1002
 
 
 def post():

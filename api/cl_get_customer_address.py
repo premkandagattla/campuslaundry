@@ -33,7 +33,9 @@ class CLGetCustomerAddress(BaseService):
                 if key in input_dict:
                     params_list.append(input_dict[key])
                 else:
-                    params_list.append(None)
+                    self.get_response_body.header.error_code = value
+                    self.get_response_body.header.status = 400
+                    raise Exception(f'Invalid input parameter: {key}')
 
             conn = MSSQL.connect()
 
