@@ -131,7 +131,7 @@ class MSSQL:
                     try:
                         if isinstance(j, memoryview):
                             row[i] = str(uuid.UUID(bytes_le=str(j)))
-                        elif type(j) == datetime:
+                        elif type(j) == datetime or type(j) == date:
                             row[i] = j.isoformat()
                         elif type(j) == bytearray:
                             row[i] = str(uuid.UUID(bytes_le=str(j)))
@@ -196,7 +196,7 @@ class MSSQL:
                     try:
                         if isinstance(j, memoryview):
                             row[i] = str(uuid.UUID(bytes_le=str(j)))
-                        elif type(j) == datetime:
+                        elif type(j) == datetime or type(j) == date:
                             row[i] = j.isoformat()
                         elif type(j) == bytearray:
                             row[i] = str(uuid.UUID(bytes_le=str(j)))
