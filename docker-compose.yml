@@ -1,0 +1,36 @@
+services:
+  db:
+    container_name: db
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'dbo'
+      MYSQL_USER: 'app_user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'root_password'
+    ports:
+      - '3306:3306'
+    volumes:
+      # - db-volume:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d
+  
+  # backend:
+  #   container_name: backend
+  #   links:
+  #     - "db"
+  #   build: ./backend/
+  #   ports:
+  #     - '5000:5000'
+    
+
+  # ui:
+  #   container_name: ui
+  #   links:
+  #     - "backend"
+  #   build: ./ui/
+  #   ports:
+  #     - '8080:80'
+
+# volumes:
+#   db-volume:
+#     driver: local

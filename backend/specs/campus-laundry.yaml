@@ -1,0 +1,1457 @@
+openapi: "3.0.0"
+
+info:
+  version: 1.0.0
+  title: Campus Laundry
+  description: campus laundry is a capstone project for helping students free from the laundry
+
+
+servers:
+  - url: /campus-laundry
+
+
+paths:
+  /health:
+    get:
+      summary: Health Check of the services
+      operationId: api.health.get
+      responses:
+        '200':
+          description: Status message from server describing current health
+          
+  
+  /cl_get_customer_login:
+    post:
+      summary: customer login verification
+      tags:
+        - cl_get_customer_login
+      description: |
+        ## Customer login verification
+        ---
+        ### parameters
+      operationId: api.cl_get_customer_login.post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/login_input'
+            examples:
+              Test Example 1:
+                value:
+                  email: "test@test.com"
+                  password: "Test#123"
+              Test Example 2:
+                value:
+                  email: "test@example.com"
+                  password: "test#123"
+      responses:
+        '200':
+          description: login verification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/login'
+              examples:
+                example1:
+                  summary: Login Successful
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.74
+                    results:
+                      [{
+                         query_status: true,
+                         message: "Login successful",
+                         customer_id: 1
+                      }]
+                example2:
+                  summary: Incorrect Password
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.28
+                    results:
+                      [{
+                         query_status: false,
+                         message: "Incorrect password",
+                         customer_id: 0
+                      }]
+                example3:
+                  summary: Email not found
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results:
+                      [{
+                         query_status: false,
+                         message: "Email not found",
+                         customer_id: 0
+                      }]
+                    
+        '400':
+          description: BAD Request for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+        '500':
+          description: Internal Server for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server'
+        'default':
+          description: unexpected error
+          
+  
+  /cl_set_customer_registration:
+    post:
+      summary: Set Service to save customer information
+      tags:
+        - cl_set_customer_registration
+      description: |
+        ## Saving New Customer Details into database
+        ---
+        ### parameters
+      operationId: api.cl_set_customer_registration.post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/registration_input'
+            examples:
+              Test Example 1:
+                value:
+                  first_name: "Test Name"
+                  last_name: "Test Name"
+                  email: "test@test.com"
+                  password: "test#123"
+                  phone_number: null
+              Test Example 2:
+                value:
+                  first_name: "Test Name 2"
+                  last_name: "Test Name 2"
+                  email: "test@example.com"
+                  password: "test@123"
+      responses:
+        '200':
+          description: save customer registration information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/registration'
+              examples:
+                example1:
+                  summary: Registration Successful
+                  value:
+                    header:
+                      value:
+                        error_code: 0
+                        error_message: ""
+                        status: 200
+                        rows_returned: 1
+                        time_taken: 0.74
+                    results:
+                      [ {
+                        query_status: true,
+                        message: "Registration Successful"
+                      }]
+                example2:
+                  summary: User Already exists
+                  value:
+                    header:
+                      value:
+                        error_code: 0
+                        error_message: ""
+                        status: 200
+                        rows_returned: 1
+                        time_taken: 0.46
+                    results:
+                      [ {
+                        query_status: false,
+                        message: "Customer already exists"
+                      }]
+                example3:
+                  summary: Error Inserting Data
+                  value:
+                    header:
+                      value:
+                        error_code: 0
+                        error_message: ""
+                        status: 200
+                        rows_returned: 1
+                        time_taken: 0.65
+                    results:
+                      [{
+                        query_status: false,
+                        message: "Something went wrong while inserting data"
+                      }]
+        '400':
+          description: BAD Request for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+        '500':
+          description: Internal Server for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server'
+        'default':
+          description: unexpected error
+          
+  
+  /cl_get_laundry_items:
+    post:
+      summary: laundry dry clean prices
+      tags:
+        - cl_get_laundry_items
+      description: |
+        ## Laundry Product Prices
+        ---
+        ### parameters
+      operationId: api.cl_get_laundry_items.post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/laundry_items_input'
+            examples:
+              Test Example 1:
+                summary: Wash Items
+                value:
+                  wash: true
+              Test Example 2:
+                summary: Dry Clean Items
+                value:
+                  wash: false
+      responses:
+        '200':
+          description: Successful list of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/laundry_items'
+              examples:
+                example1:
+                  summary: successful data retrieval
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results:
+                      [
+                        {
+                          "price": 8.05,
+                          "product_fabric": "Cotton",
+                          "product_id": 1,
+                          "product_name": "T-Shirt"
+                        },
+                        {
+                          "price": 6.25,
+                          "product_fabric": "Polyester",
+                          "product_id": 2,
+                          "product_name": "T-Shirt"
+                        }
+                      ]
+                    
+              
+        '400':
+          description: BAD Request for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+        '500':
+          description: Internal Server for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server'
+        'default':
+          description: unexpected error
+          
+          
+  
+  # Customer Information Section
+  /cl_get_customer_details:
+    post:
+      summary: Customer Information
+      tags:
+        - cl_get_customer_details
+      description: |
+        ## Customer Details
+        ---
+        ### parameters
+        - email
+      operationId: api.cl_get_customer_details.post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/customer_details_input'
+            examples:
+              Test Example 1:
+                summary: Customer Information
+                value:
+                  email: test@test.com
+      responses:
+        '200':
+          description: Customer Information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customer_details'
+              examples:
+                example1:
+                  summary: successful data retrieval
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results:
+                      [
+                        {
+                          "customer_id": 2,
+                          "first_name": "test",
+                          "last_name": 1,
+                          "date_of_birth": null,
+                          "gender": null
+                        }
+                      ]
+        '400':
+          description: BAD Request for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+        '500':
+          description: Internal Server for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server'
+        'default':
+          description: unexpected error
+  
+  /cl_set_customer_address:
+    post:
+      summary: Update Customer Address
+      tags:
+        - cl_set_customer_address
+      description: |
+        ## Update Customer Address
+        ---
+        ### parameters
+        
+      operationId: api.cl_set_customer_address.post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/set_customer_address_input'
+            examples:
+              Test Example 1:
+                summary: Customer Add New Address
+                value:
+                  customer_id: 2
+                  street: '108 University Ave E'
+                  city: 'waterloo'
+                  province: 'ontario'
+                  postal_code: 'N2K 0H4'
+                  country: 'Canada'
+                  latitude: -80.51752
+                  longitude: 43.47886
+                  address_id: null
+              Test Example 2:
+                summary: Customer & Address IDs Mismatched
+                value:
+                  customer_id: 1
+                  street: '108 University Ave E'
+                  city: 'waterloo'
+                  province: 'ontario'
+                  postal_code: 'N2K 0H4'
+                  country: 'Canada'
+                  latitude: -80.51752
+                  longitude: 43.47886
+                  address_id: 2
+              Test Example 3:
+                summary: Invalid Address Id
+                value:
+                  customer_id: 1
+                  street: '108 University Ave E'
+                  city: 'waterloo'
+                  province: 'ontario'
+                  postal_code: 'N2K 0H4'
+                  country: 'Canada'
+                  latitude: -80.51752
+                  longitude: 43.47886
+                  address_id: 1221092
+              Test Example 4:
+                summary: Address ID Update
+                value:
+                  customer_id: 2
+                  street: '108 University Ave E'
+                  city: 'waterloo'
+                  province: 'ontario'
+                  postal_code: 'N2J 2W2'
+                  country: 'Canada'
+                  latitude: -80.51752
+                  longitude: 43.47886
+                  address_id: 2
+      responses:
+        '200':
+          description: Customer Update Address
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/set_customer_address'
+              examples:
+                example1:
+                  summary: Create Address
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: [
+                        {
+                          "message": "Successfully Created Address",
+                          "query_status": true
+                        }
+                      ]
+                example2:
+                  summary: Update Address
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: [
+                        {
+                          "message": "Successfully Updated Address",
+                          "query_status": true
+                        }
+                      ]
+                example3:
+                  summary: Customer & Address Ids Mismatched
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: [
+                      {
+                        "message": "Address id and customer id mismatch",
+                        "query_status": false
+                      }
+                    ]
+                example4:
+                  summary: Invalid Address Id
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: [
+                      {
+                        "message": "Invalid Address Id",
+                        "query_status": false
+                      }
+                    ]
+                    
+        '400':
+          description: BAD Request for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+        '500':
+          description: Internal Server for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server'
+        'default':
+          description: unexpected error
+      
+      
+  
+  /cl_get_customer_address:
+    post:
+      summary: Get Customer Address List
+      tags:
+        - cl_get_customer_address
+      description: |
+        ## Get Customer Address
+        ---
+        ### parameters
+    
+      operationId: api.cl_get_customer_address.post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/get_customer_address_input'
+            examples:
+              Test Example 1:
+                summary: Get Customer Address
+                value:
+                  customer_id: 2
+      responses:
+        '200':
+          description: Get Customer Address
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get_customer_address'
+              examples:
+                example1:
+                  summary: Customer Address List
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: [
+                        {
+                          "address_id": 1,
+                          "city": "waterloo",
+                          "country": "Canada",
+                          "customer_id": 2,
+                          "postal_code": "N2K 0H4",
+                          "province": "ontario",
+                          "street": "108 University Ave E"
+                        }
+                      ]
+                example2:
+                  summary: Empty Customer Address List
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: []
+        '400':
+          description: BAD Request for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+        '500':
+          description: Internal Server for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server'
+        'default':
+          description: unexpected error
+          
+  
+  /cl_set_customer_address_status:
+    post:
+      summary: Set Customer Address status
+      tags:
+        - cl_set_customer_address_status
+      description: |
+        ## Set Customer Address Status
+        ---
+        ### parameters
+    
+      operationId: api.cl_set_customer_address_status.post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/set_customer_address_status_input'
+            examples:
+              Test Example 1:
+                summary: Set Customer Address Status to Inactive
+                value:
+                  customer_id: 2
+                  address_id: 1
+                  active: false
+              Test Example 2:
+                summary: Set Customer Address Status to Active
+                value:
+                  customer_id: 2
+                  address_id: 1
+                  active: true
+              Test Example 3:
+                summary: Address Not Found
+                value:
+                  customer_id: 1
+                  address_id: 1123123
+                  active: false
+      responses:
+        '200':
+          description: Set Customer Address Inactive
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/set_customer_address_status'
+              examples:
+                example1:
+                  summary: Set Customer Address Inactive
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: [
+                      {
+                        "message": "Address inactivated successfully",
+                        "query_status": true
+                      }
+                    ]
+                example2:
+                  summary: Set Customer Address Active
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: [
+                      {
+                        "message": "Address activated successfully",
+                        "query_status": true
+                      }
+                    ]
+                example3:
+                  summary: Customer Address Not Found
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: [
+                      {
+                        "message": "Address not found",
+                        "query_status": false
+                      }
+                    ]
+        '400':
+          description: BAD Request for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+        '500':
+          description: Internal Server for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server'
+        'default':
+          description: unexpected error
+          
+          
+
+  /cl_set_customer_order:
+    post:
+      summary: Create Customer Order
+      tags:
+        - cl_set_customer_order
+      description: |
+        ## Set Customer Order
+        ---
+        ### parameters
+    
+      operationId: api.cl_set_customer_order.post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/set_customer_order_input'
+            examples:
+              Test Example 1:
+                summary: Set Customer Order
+                value:
+                  customer_id: 2
+                  items_count: 1
+                  total_price: 5.65
+                  laundry_items: [{
+                    product_id: 1,
+                    quantity: 1,
+                    price: 5,
+                    laundry_type: 'wash'
+                  }]
+                  order_weight: 10
+              Test Example 2:
+                summary: Set Customer Order Not Found
+                value:
+                  customer_id: 2
+                  items_count: 1
+                  total_price: 5.65
+                  laundry_items: [ {
+                    product_id: 1,
+                    quantity: 1,
+                    price: 5,
+                    laundry_type: 'wash'
+                  } ]
+                  order_weight: 10
+                  order_id: 20121232
+              Test Example 3:
+                summary: Update Customer Order with new item
+                value:
+                  customer_id: 2
+                  items_count: 1
+                  total_price: 5.65
+                  laundry_items: [ {
+                    product_id: 1,
+                    quantity: 1,
+                    price: 5,
+                    laundry_type: 'wash'
+                  }, {
+                    product_id: 1,
+                    quantity: 1,
+                    price: 5,
+                    laundry_type: 'iron'
+                  } ]
+                  order_weight: 10
+                  order_id: 1
+              Test Example 4:
+                summary: Update Customer Order item price
+                value:
+                  customer_id: 2
+                  items_count: 1
+                  total_price: 5.65
+                  laundry_items: [ {
+                    product_id: 1,
+                    quantity: 1,
+                    price: 5,
+                    laundry_type: 'wash'
+                  }, {
+                    product_id: 2,
+                    quantity: 1,
+                    price: 15,
+                    laundry_type: 'iron'
+                  } ]
+                  order_weight: 10
+                  order_id: 1
+              Test Example 5:
+                summary: Update Customer Order remove new item
+                value:
+                  customer_id: 2
+                  items_count: 1
+                  total_price: 5.65
+                  laundry_items: [ {
+                    product_id: 1,
+                    quantity: 1,
+                    price: 5,
+                    laundry_type: 'wash'
+                  }]
+                  order_weight: 10
+                  order_id: 1
+              Test Example 6:
+                summary: Update Customer Order duplicated products
+                value:
+                  customer_id: 2
+                  items_count: 1
+                  total_price: 5.65
+                  laundry_items: [ {
+                    product_id: 1,
+                    quantity: 1,
+                    price: 5,
+                    laundry_type: 'wash'
+                  }, {
+                    product_id: 1,
+                    quantity: 21,
+                    price: 15,
+                    laundry_type: 'wash'
+                  } ]
+                  order_weight: 10
+                  order_id: 1
+      responses:
+        '200':
+          description: Customer Order Created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/set_customer_address_status'
+              examples:
+                example1:
+                  summary: Order Created successfully
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 0.12
+                    results: [
+                      {
+                        "message": "Order Created Successfully",
+                        "query_status": true,
+                        "order_id": 1
+                      }
+                    ]
+                example2:
+                  summary: Order Id and Customer Id mismatched
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 143.22
+                    results: [
+                      {
+                        "message": "order id and customer id is mismatch",
+                        "order_id": 1,
+                        "query_status": false
+                      }
+                    ]
+                example3:
+                  summary: Order Id creation failed
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 143.2
+                    results: [
+                      {
+                        "message": "Failed to create order",
+                        "order_id": null,
+                        "query_status": false
+                      }
+                    ]
+        '400':
+          description: BAD Request for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+        '500':
+          description: Internal Server for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server'
+        'default':
+          description: unexpected error
+          
+  /cl_get_customer_order_by_order_id:
+    post:
+      summary: Get Customer Order By Order ID
+      tags:
+        - cl_get_customer_order_by_order_id
+      description: |
+        ## Get Order By Order ID
+        ---
+        ### parameters
+      
+      operationId: api.cl_get_customer_order_by_order_id.post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/get_customer_order_by_id_input'
+            examples:
+              Test Example 1:
+                summary: Get Customer Order by id
+                value:
+                  customer_id: 2
+                  order_id: 1
+              Test Example 2:
+                summary: No Order for the Customer
+                value:
+                  customer_id: 2
+                  order_id: 12313213
+      responses:
+        '200':
+          description: Customer Order Retrieval Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get_customer_order_by_id'
+              examples:
+                example1:
+                  summary: Get Customer Order by id
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 1.12
+                    results: [
+                      {
+                        "amount": 20,
+                        "customer_id": 2,
+                        "items_count": 2,
+                        "order_date": "2023-07-07T21:56:42",
+                        "order_id": 1,
+                        "order_product_summary": "[{price: 5.0, quantity: 1, product_id: 1, laundry_type: wash}, {price: 15.0, quantity: 21, product_id: 2, laundry_type: wash}]",
+                        "order_weight": 12.2,
+                        "payment_status": "pending"
+                      }
+                    ]
+                example2:
+                  summary: No Order details found
+                  value:
+                    header:
+                      error_code: 0
+                      error_message: ""
+                      status: 200
+                      rows_returned: 1
+                      time_taken: 1.12
+                    results: [
+                    
+                    ]
+                    
+        '400':
+          description: BAD Request for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+        '500':
+          description: Internal Server for Input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internal_server'
+        'default':
+          description: unexpected error
+        
+
+
+components:
+  schemas:
+    # Common Schemas
+    
+    result_headers:
+      type: object
+      properties:
+        error_code:
+          type: integer
+          description: custom application error code
+        error_message:
+          type: string
+          description: custom application error message
+        rows_returned:
+          type: integer
+          description: total number of rows returned from database
+        status:
+          type: integer
+          description: status code of the operation
+        time_taken:
+          type: number
+          description: total time taken for the operation
+    
+    bad_request:
+      type: object
+      properties:
+        header:
+          type: object
+          properties:
+            error_code:
+              type: integer
+              default: 4000
+            error_message:
+              type: string
+              default: ""
+            rows_returned:
+              type: integer
+              default: 0
+            status:
+              type: integer
+              default: 400
+            time_taken:
+              type: number
+        results:
+          type: array
+          default: []
+          
+    
+    internal_server:
+      type: object
+      properties:
+        header:
+          type: object
+          properties:
+            error_code:
+              type: integer
+              default: 5000
+            error_message:
+              type: string
+              default: "Something went wrong !!!"
+            status:
+              type: integer
+              default: 500
+            rows_returned:
+              type: integer
+            time_taken:
+              type: number
+              default: 0
+        results:
+          type: array
+          default: []
+      
+      
+    
+    # login Section
+    
+    login_input:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+          pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
+          default: "test@test.com"
+        password:
+          type: string
+          minLength: 1
+          default: "Test#123"
+      required:
+        - email
+        - password
+    
+    login:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/login_results'
+    
+    login_results:
+      type: object
+      properties:
+        query_status:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: "Login successful"
+        customer_id:
+          type: integer
+          default: 1
+          nullable: true
+          
+    
+    # Registration Section
+    
+    registration_input:
+      type: object
+      properties:
+        first_name:
+          type: string
+          minLength: 1
+          pattern: ^[a-zA-Z ]+$
+          default: "Test Name"
+        last_name:
+          type: string
+          minLength: 1
+          pattern: ^[a-zA-Z ]+$
+          default: "Test Name"
+        email:
+          type: string
+          format: email
+          minLength: 1
+          pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
+          default: "test@test.com"
+        password:
+          type: string
+          minLength: 1
+          default: "Test#123"
+        phone_number:
+          type: string
+          minLength: 10
+          maxLength: 10
+          nullable: true
+      required:
+        - first_name
+        - last_name
+        - email
+        - password
+        - phone_number
+
+    registration:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/registration_results'
+
+    registration_results:
+      type: object
+      properties:
+        query_status:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: "Registration successful"
+    
+    # Laundry Dry Clean Prices
+    
+    laundry_items_input:
+      type: object
+      properties:
+        wash:
+          type: boolean
+      required:
+        - wash
+    
+    laundry_items:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/laundry_items_results'
+    
+    laundry_items_results:
+      type: object
+      properties:
+        product_id:
+          type: integer
+        product_name:
+          type: string
+        product_fabric:
+          type: string
+          nullable: true
+        price:
+          type: number
+          nullable: true
+        
+        
+        
+   
+    # Customer Information Section
+
+    customer_details_input:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+          pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
+          default: "test@test.com"
+      required:
+        - email
+    
+    customer_details:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/customer_details_results'
+    
+    customer_details_results:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        date_of_birth:
+          type: string
+          nullable: true
+        gender:
+          type: string
+          minimum: 1
+          maximum: 1
+          nullable: true
+          
+    
+    # Customer Set Address
+    
+    set_customer_address_input:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+          default: 2
+        street:
+          type: string
+          default: '108 University Ave E'
+        city:
+          type: string
+          default: 'waterloo'
+        province:
+          type: string
+          default: 'ontario'
+        postal_code:
+          type: string
+          default: 'N2K 0H4'
+        country:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        address_id:
+          type: integer
+          nullable: true
+      required:
+        - customer_id
+        - street
+        - city
+        - province
+        - postal_code
+        - country
+        - latitude
+        - longitude
+        - address_id
+          
+          
+    
+    set_customer_address:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/set_customer_address_results'
+    
+    set_customer_address_results:
+      type: object
+      properties:
+        query_status:
+          type: boolean
+        message:
+          type: string
+      
+      
+      
+    
+    # Customer Get Address
+    
+    get_customer_address_input:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+          default: 2
+      required:
+        - customer_id
+  
+    get_customer_address:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/get_customer_address_results'
+
+    get_customer_address_results:
+      type: object
+      properties:
+        address_id:
+          type: integer
+        customer_id:
+          type: integer
+        street:
+          type: string
+        city:
+          type: string
+        province:
+          type: string
+        country:
+          type: string
+        postal_code:
+          type: string
+          
+    # Customer Address Status
+    
+    set_customer_address_status_input:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+        address_id:
+          type: integer
+        active:
+          type: boolean
+          
+      required:
+        - customer_id
+        - address_id
+        - active
+
+    set_customer_address_status:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/set_customer_address_status_results'
+
+    set_customer_address_status_results:
+      type: object
+      properties:
+        query_status:
+          type: boolean
+        message:
+          type: string
+          
+    # Customer Create Order
+    
+    set_customer_order_input:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+        items_count:
+          type: integer
+        total_price:
+          type: number
+        laundry_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/order_laundry_items'
+        order_weight:
+          type: number
+          nullable: true
+        subscribed_id:
+          type: integer
+          nullable: true
+        order_id:
+          type: integer
+          nullable: true
+      required:
+        - customer_id
+        - items_count
+        - total_price
+        - laundry_items
+        - order_weight
+    
+    order_laundry_items:
+      type: object
+      properties:
+        product_id:
+          type: integer
+        quantity:
+          type: integer
+        price:
+          type: number
+        laundry_type:
+          type: string
+      required:
+        - product_id
+        - quantity
+        - price
+        - laundry_type
+        
+    
+    set_customer_order:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/set_customer_order_results'
+    
+    set_customer_order_results:
+      type: object
+      properties:
+        query_status:
+          type: boolean
+        message:
+          type: string
+        order_id:
+          type: integer
+          nullable: true
+          
+    get_customer_order_by_id_input:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+        order_id:
+          type: integer
+      required:
+        - customer_id
+        - order_id
+    
+    get_customer_order_by_id:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/get_customer_order_by_id_results'
+    
+    get_customer_order_by_id_results:
+      type: object
+      
+      
+      
+
+    
