@@ -29,7 +29,7 @@ CREATE TABLE `payments` (
   `order_id` int NOT NULL,
   `customer_id` int NOT NULL,
   `payment_status` varchar(100) NOT NULL,
-  `amount` float NOT NULL,
+  `total_price` float NOT NULL,
   `payment_date` datetime DEFAULT NULL,
   PRIMARY KEY (`payment_id`),
   KEY `customer_id` (`customer_id`),

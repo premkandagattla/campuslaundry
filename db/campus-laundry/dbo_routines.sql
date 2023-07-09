@@ -138,13 +138,19 @@ sp: BEGIN
 
     SELECT o.order_id, o.customer_id, 
             o.items_count, o.order_date, o.order_weight, 
-            p.amount, p.payment_status,
+            p.total_price, p.payment_status,
+            p.payment_date,
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
                 'product_id', ops.product_id,
                 'quantity', ops.quantity,
                 'laundry_type', ops.laundry_type,
                 'price', ops.price
-            )) FROM order_product_summary ops WHERE ops.order_id = o.order_id) AS order_product_summary
+            )) FROM order_product_summary ops WHERE ops.order_id = o.order_id) AS laundry_items,
+            (SELECT JSON_OBJECT(
+                'pickup_date', opt.pickup_date,
+                'pickup_time', opt.pickup_time,
+                'address_id', (select CONCAT(street,",", city,",", province,",",country,",", postal_code) from customer_address ca where ca.address_id = opt.address_id)
+            ) FROM order_pickup_details opt WHERE opt.order_id = o.order_id) AS pickup_details
     FROM orders o left join payments p on o.order_id = p.order_id
     where o.order_id = p_order_id and o.customer_id = p_customer_id;
     
@@ -301,6 +307,7 @@ CREATE DEFINER=`root`@`%` PROCEDURE `usp_set_customer_order`(
     IN p_items_count INT,
     IN p_total_price FLOAT,
     IN p_laundry_items JSON,
+    IN p_pickup_details JSON,
     IN p_order_weight FLOAT,
     IN p_subscribed_id INT,
     IN p_order_id INT
@@ -346,7 +353,7 @@ sp:BEGIN
         VALUES (p_order_id, 'created', NOW());
         
         INSERT INTO payments 
-        (order_id, customer_id, payment_status, amount, payment_date) 
+        (order_id, customer_id, payment_status, total_price, payment_date) 
         VALUES 
         (p_order_id, p_customer_id, 'pending', p_total_price, NOW());       
     END IF;
@@ -396,6 +403,39 @@ sp:BEGIN
      ON DUPLICATE KEY UPDATE
          order_product_summary.quantity = ost.quantity,
          order_product_summary.price = ost.price;
+         
+	DROP TEMPORARY TABLE IF EXISTS orderPickupTest;
+    CREATE TEMPORARY TABLE orderPickupTest(
+		order_id INT,
+        pickup_date Date,
+        pickup_time varchar(100),
+        address_id INT    
+    );
+    
+    INSERT INTO orderPickupTest (order_id, pickup_date, pickup_time, address_id)
+    SELECT p_order_id, op_jt.pickup_date, op_jt.pickup_time, op_jt.address_id
+    FROM JSON_TABLE(p_pickup_details,
+		'$'
+        COLUMNS (
+            pickup_date Date PATH '$.pickup_date',
+            pickup_time varchar(100) PATH '$.pickup_time',
+            address_id INT PATH '$.address_id'
+        )
+    ) AS op_jt;
+    
+    -- Insert new records
+    INSERT INTO order_pickup_details
+    (order_id, pickup_date, pickup_time, address_id)
+     SELECT 
+		 opt.order_id, 
+		 opt.pickup_date, 
+		 opt.pickup_time, 
+		 opt.address_id
+     FROM orderPickupTest opt
+     ON DUPLICATE KEY UPDATE
+         order_pickup_details.pickup_date = opt.pickup_date,
+         order_pickup_details.pickup_time = opt.pickup_time,
+         order_pickup_details.address_id = opt.address_id;         
 		
     IF `_rollback` THEN
 		ROLLBACK;  

@@ -1,3 +1,5 @@
+import json
+
 from common.base_service import BaseService
 from common.mysql import MYSQL
 
@@ -45,6 +47,9 @@ class CLGetCustomerOrderByOrderId(BaseService):
             sp = "dbo.usp_get_customer_order_by_order_id"
 
             results = MYSQL.execute_sp_with_columns(conn, sp, params_list)
+            for result in results:
+                result['laundry_items'] = json.loads(result['laundry_items'])
+                result['pickup_details'] = json.loads(result['pickup_details'])
             self.get_response_body.results = results
             return_val, status_code = self.get_success_response(results)
 
