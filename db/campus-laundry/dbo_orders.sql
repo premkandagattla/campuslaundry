@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `dbo` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `dbo`;
 -- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: dbo
@@ -36,7 +34,7 @@ CREATE TABLE `orders` (
   KEY `subscribed_id` (`subscribed_id`),
   CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`),
   CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`subscribed_id`) REFERENCES `subscribed_customer` (`subscribed_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +43,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (1,2,2,NULL,'2023-07-07 21:56:42',12.2),(5,2,2,NULL,'2023-07-07 22:10:38',12.2),(6,2,2,NULL,'2023-07-07 22:11:47',12.2),(8,2,2,NULL,'2023-07-07 22:13:05',12.2),(9,2,2,NULL,'2023-07-07 22:13:29',12.2),(10,2,2,NULL,'2023-07-07 22:17:54',12.2),(11,2,1,NULL,'2023-07-07 22:47:52',10);
+INSERT INTO `orders` VALUES (1,1,1,NULL,'2023-07-09 18:39:23',10);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -58,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-07 20:16:13
+-- Dump completed on 2023-07-09 15:34:41

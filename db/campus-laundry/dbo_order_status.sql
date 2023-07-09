@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `dbo` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `dbo`;
 -- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: dbo
@@ -32,7 +30,7 @@ CREATE TABLE `order_status` (
   PRIMARY KEY (`order_status_id`),
   KEY `order_id` (`order_id`),
   CONSTRAINT `order_status_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +39,7 @@ CREATE TABLE `order_status` (
 
 LOCK TABLES `order_status` WRITE;
 /*!40000 ALTER TABLE `order_status` DISABLE KEYS */;
-INSERT INTO `order_status` VALUES (1,1,'created','2023-07-07 21:56:42'),(7,5,'created','2023-07-07 22:10:38'),(8,6,'created','2023-07-07 22:11:47'),(10,8,'created','2023-07-07 22:13:05'),(11,9,'created','2023-07-07 22:13:29'),(12,10,'created','2023-07-07 22:17:54'),(13,11,'created','2023-07-07 22:47:52');
+INSERT INTO `order_status` VALUES (1,1,'created','2023-07-09 18:39:23');
 /*!40000 ALTER TABLE `order_status` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-07 20:16:12
+-- Dump completed on 2023-07-09 15:34:41

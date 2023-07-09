@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `dbo` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `dbo`;
 -- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: dbo
@@ -42,7 +40,7 @@ CREATE TABLE `customer_phone_number` (
 
 LOCK TABLES `customer_phone_number` WRITE;
 /*!40000 ALTER TABLE `customer_phone_number` DISABLE KEYS */;
-INSERT INTO `customer_phone_number` VALUES (1,9,'5483333333',1,1);
+INSERT INTO `customer_phone_number` VALUES (1,2,'5483333333',1,1);
 /*!40000 ALTER TABLE `customer_phone_number` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -55,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-07 20:16:13
+-- Dump completed on 2023-07-09 15:34:41

@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `dbo` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `dbo`;
 -- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: dbo
@@ -32,7 +30,7 @@ CREATE TABLE `customer` (
   `email` varchar(100) NOT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`customer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +39,7 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-INSERT INTO `customer` VALUES (1,'Prem Sai Krishna','Kandagattla','3jSe6iP2QRV/a6YcpFoyaA==','143premsai@gmail.com',1),(2,'Test Name','Test Name','ZmQVXXfETmwNwXxNstqOjA==','test@test.com',1),(4,'Dhoni','MS','OdjTzpnvuaveiGdSzVYNGA==','dhoni@csk.com',1),(5,'prem','k','CRPGpsJ5M+2Lz0ztaBooLg==','prem@test.com',1),(6,'ss','ss','GBYPlDAVuXgkpL0qg0D3Og==','ss@ss.aa',1),(7,'dini','kv','HqlUiC91hkx81dBWVbfXMQ==','dini@g.com',1),(8,'Test Name','Test Name','OdjTzpnvuaveiGdSzVYNGA==','test2@test.com',1),(9,'Test Name','Test Name','OdjTzpnvuaveiGdSzVYNGA==','test3@test.com',1);
+INSERT INTO `customer` VALUES (1,'Test Name','Test Name','ZmQVXXfETmwNwXxNstqOjA==','test@test.com',1),(2,'Prem Sai Krishna','Kandagattla','3jSe6iP2QRV/a6YcpFoyaA==','143premsai@gmail.com',1);
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-07 20:16:13
+-- Dump completed on 2023-07-09 15:34:41
