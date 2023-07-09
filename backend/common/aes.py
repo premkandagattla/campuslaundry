@@ -81,5 +81,3 @@ def decrypt(cipher_text):
         return unpad(decrypted_data, BLOCK_SIZE).decode()
     else:
         return ''
-
-print(encrypt("root_password"))

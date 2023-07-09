@@ -32,16 +32,17 @@ class MYSQL:
             passwd = aes.decrypt(env_values['PASSWORD'])
             dbname = ConfigReader.getconfig('database', 'dbname')
             server_name = ConfigReader.getconfig('database', 'server')
+            port = ConfigReader.getconfig('database', 'port')
 
             if username is None or passwd is None or dbname is None or server_name is None:
                 raise Exception("Failed to fetch DB Creds")
 
             server_windows = sys.platform
 
-            conn = mysql.connector.connect(user='root', password='root_password',
-                                           host='127.0.0.1',
-                                           port='3306',
-                                           database='dbo')
+            conn = mysql.connector.connect(user=username, password=passwd,
+                                           host=server_name,
+                                           port=port,
+                                           database=dbname)
         except Exception as e:
             log_err_message(func_name, str(e))
             raise e
