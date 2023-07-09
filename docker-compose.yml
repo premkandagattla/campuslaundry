@@ -9,18 +9,18 @@ services:
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'root_password'
     ports:
-      - '3306:3306'
+      - '32001:3306'
     volumes:
-      # - db-volume:/var/lib/mysql
-      - ./campus-laundry:/docker-entrypoint-initdb.d
+      - db-volume:/var/lib/mysql
+      - ./db/campus-laundry:/docker-entrypoint-initdb.d
   
-  # backend:
-  #   container_name: backend
-  #   links:
-  #     - "db"
-  #   build: ./backend/
-  #   ports:
-  #     - '5000:5000'
+  backend:
+    container_name: backend
+    links:
+      - "db"
+    build: ./backend/
+    ports:
+      - '5000:5000'
     
 
   # ui:
@@ -31,6 +31,6 @@ services:
   #   ports:
   #     - '8080:80'
 
-# volumes:
-#   db-volume:
-#     driver: local
+volumes:
+  db-volume:
+    driver: local
