@@ -5,6 +5,12 @@ info:
   title: Campus Laundry
   description: campus laundry is a capstone project for helping students free from the laundry
 
+tags:
+  - {name: "default", description: "Test API"}
+  - {name: "Customer Login", description: "Customer Login Information API's"}
+  - {name: "Customer Profile", description: "Customer Profile Information API's"}
+  - {name: "Customer Order", description: "Customer Order Information API's"}
+  - {name: "Laundry Items", description: "Laundry Items Information API's"}
 
 servers:
   - url: /campus-laundry
@@ -19,12 +25,14 @@ paths:
         '200':
           description: Status message from server describing current health
           
+          
+  # Customer login Section
   
   /cl_get_customer_login:
     post:
       summary: customer login verification
       tags:
-        - cl_get_customer_login
+        - Customer Login
       description: |
         ## Customer login verification
         ---
@@ -32,85 +40,14 @@ paths:
       operationId: api.cl_get_customer_login.post
       requestBody:
         required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/login_input'
-            examples:
-              Test Example 1:
-                value:
-                  email: "test@test.com"
-                  password: "Test#123"
-              Test Example 2:
-                value:
-                  email: "test@example.com"
-                  password: "test#123"
+        $ref: '#/components/requestBodies/login'
       responses:
         '200':
-          description: login verification
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/login'
-              examples:
-                example1:
-                  summary: Login Successful
-                  value:
-                    header:
-                      error_code: 0
-                      error_message: ""
-                      status: 200
-                      rows_returned: 1
-                      time_taken: 0.74
-                    results:
-                      [{
-                         query_status: true,
-                         message: "Login successful",
-                         customer_id: 1
-                      }]
-                example2:
-                  summary: Incorrect Password
-                  value:
-                    header:
-                      error_code: 0
-                      error_message: ""
-                      status: 200
-                      rows_returned: 1
-                      time_taken: 0.28
-                    results:
-                      [{
-                         query_status: false,
-                         message: "Incorrect password",
-                         customer_id: 0
-                      }]
-                example3:
-                  summary: Email not found
-                  value:
-                    header:
-                      error_code: 0
-                      error_message: ""
-                      status: 200
-                      rows_returned: 1
-                      time_taken: 0.12
-                    results:
-                      [{
-                         query_status: false,
-                         message: "Email not found",
-                         customer_id: 0
-                      }]
-                    
+          $ref: '#/components/responses/login'
         '400':
-          description: BAD Request for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/bad_request'
+          $ref: '#/components/responses/400'
         '500':
-          description: Internal Server for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/internal_server'
+          $ref: '#/components/responses/500'
         'default':
           description: unexpected error
           
@@ -119,7 +56,7 @@ paths:
     post:
       summary: Set Service to save customer information
       tags:
-        - cl_set_customer_registration
+        - Customer Login
       description: |
         ## Saving New Customer Details into database
         ---
@@ -199,26 +136,20 @@ paths:
                         message: "Something went wrong while inserting data"
                       }]
         '400':
-          description: BAD Request for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/bad_request'
+          $ref: '#/components/responses/400'
         '500':
-          description: Internal Server for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/internal_server'
+          $ref: '#/components/responses/500'
         'default':
           description: unexpected error
           
+          
+  # Laundry Items Section
   
   /cl_get_laundry_items:
     post:
       summary: laundry dry clean prices
       tags:
-        - cl_get_laundry_items
+        - Laundry Items
       description: |
         ## Laundry Product Prices
         ---
@@ -274,28 +205,21 @@ paths:
                     
               
         '400':
-          description: BAD Request for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/bad_request'
+          $ref: '#/components/responses/400'
         '500':
-          description: Internal Server for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/internal_server'
+          $ref: '#/components/responses/500'
         'default':
           description: unexpected error
           
           
   
-  # Customer Information Section
+  # Customer Profile Section
+  
   /cl_get_customer_details:
     post:
       summary: Customer Information
       tags:
-        - cl_get_customer_details
+        - Customer Profile
       description: |
         ## Customer Details
         ---
@@ -333,25 +257,18 @@ paths:
                     results:
                       [
                         {
-                          "customer_id": 2,
-                          "first_name": "test",
-                          "last_name": 1,
-                          "date_of_birth": null,
-                          "gender": null
+                          "customer_id": 1,
+                          "date_of_birth": "1996-09-15",
+                          "email": "test@test.com",
+                          "first_name": "Test Name",
+                          "gender": "M",
+                          "last_name": "Test Name"
                         }
                       ]
         '400':
-          description: BAD Request for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/bad_request'
+          $ref: '#/components/responses/400'
         '500':
-          description: Internal Server for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/internal_server'
+          $ref: '#/components/responses/500'
         'default':
           description: unexpected error
   
@@ -359,7 +276,7 @@ paths:
     post:
       summary: Update Customer Address
       tags:
-        - cl_set_customer_address
+        - Customer Profile
       description: |
         ## Update Customer Address
         ---
@@ -491,17 +408,9 @@ paths:
                     ]
                     
         '400':
-          description: BAD Request for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/bad_request'
+          $ref: '#/components/responses/400'
         '500':
-          description: Internal Server for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/internal_server'
+          $ref: '#/components/responses/500'
         'default':
           description: unexpected error
       
@@ -511,7 +420,7 @@ paths:
     post:
       summary: Get Customer Address List
       tags:
-        - cl_get_customer_address
+        - Customer Profile
       description: |
         ## Get Customer Address
         ---
@@ -528,7 +437,7 @@ paths:
               Test Example 1:
                 summary: Get Customer Address
                 value:
-                  customer_id: 2
+                  customer_id: 1
       responses:
         '200':
           description: Get Customer Address
@@ -551,7 +460,7 @@ paths:
                           "address_id": 1,
                           "city": "waterloo",
                           "country": "Canada",
-                          "customer_id": 2,
+                          "customer_id": 1,
                           "postal_code": "N2K 0H4",
                           "province": "ontario",
                           "street": "108 University Ave E"
@@ -568,17 +477,9 @@ paths:
                       time_taken: 0.12
                     results: []
         '400':
-          description: BAD Request for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/bad_request'
+          $ref: '#/components/responses/400'
         '500':
-          description: Internal Server for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/internal_server'
+          $ref: '#/components/responses/500'
         'default':
           description: unexpected error
           
@@ -587,7 +488,7 @@ paths:
     post:
       summary: Set Customer Address status
       tags:
-        - cl_set_customer_address_status
+        - Customer Profile
       description: |
         ## Set Customer Address Status
         ---
@@ -673,27 +574,21 @@ paths:
                       }
                     ]
         '400':
-          description: BAD Request for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/bad_request'
+          $ref: '#/components/responses/400'
         '500':
-          description: Internal Server for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/internal_server'
+          $ref: '#/components/responses/500'
         'default':
           description: unexpected error
           
           
+          
+  # Customer Order Details Section
 
   /cl_set_customer_order:
     post:
       summary: Create Customer Order
       tags:
-        - cl_set_customer_order
+        - Customer Order
       description: |
         ## Set Customer Order
         ---
@@ -892,25 +787,18 @@ paths:
                       }
                     ]
         '400':
-          description: BAD Request for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/bad_request'
+          $ref: '#/components/responses/400'
         '500':
-          description: Internal Server for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/internal_server'
+          $ref: '#/components/responses/500'
         'default':
           description: unexpected error
           
+  
   /cl_get_customer_order_by_order_id:
     post:
       summary: Get Customer Order By Order ID
       tags:
-        - cl_get_customer_order_by_order_id
+        - Customer Order
       description: |
         ## Get Order By Order ID
         ---
@@ -976,23 +864,34 @@ paths:
                     results: [
                     
                     ]
-                    
         '400':
-          description: BAD Request for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/bad_request'
+          $ref: '#/components/responses/400'
         '500':
-          description: Internal Server for Input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/internal_server'
+          $ref: '#/components/responses/500'
         'default':
           description: unexpected error
         
 
+
+  /cl_get_customer_orders_history:
+    post:
+      summary: Get Customer Orders History
+      tags:
+        - Customer Order
+      description: |
+        ## Get Customer Orders History
+        ---
+      operationId: api.cl_get_customer_orders_history.post
+      requestBody:
+        required: true
+        $ref: '#/components/requestBodies/order_history'
+      responses:
+        '200':
+          $ref: '#/components/responses/order_history'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
 
 components:
   schemas:
@@ -1388,7 +1287,10 @@ components:
         message:
           type: string
           
+    
     # Customer Create Order
+    
+      # INPUTS
     
     set_customer_order_input:
       type: object
@@ -1423,6 +1325,23 @@ components:
         - pickup_details
         - order_weight
     
+    order_laundry_items:
+      type: object
+      properties:
+        product_id:
+          type: integer
+        quantity:
+          type: integer
+        price:
+          type: number
+        laundry_type:
+          type: string
+      required:
+        - product_id
+        - quantity
+        - price
+        - laundry_type
+    
     order_pickup_details:
       type: object
       properties:
@@ -1441,25 +1360,8 @@ components:
         - pickup_date
         - pickup_time
         - address_id
-  
-    
-    order_laundry_items:
-      type: object
-      properties:
-        product_id:
-          type: integer
-        quantity:
-          type: integer
-        price:
-          type: number
-        laundry_type:
-          type: string
-      required:
-        - product_id
-        - quantity
-        - price
-        - laundry_type
-        
+
+      # Calling API
     
     set_customer_order:
       type: object
@@ -1482,6 +1384,10 @@ components:
           type: integer
           nullable: true
           
+    
+    
+    # Customer Get Order Details BY Order ID
+    
     get_customer_order_by_id_input:
       type: object
       properties:
@@ -1536,3 +1442,217 @@ components:
               type: string
         total_price:
           type: number
+          
+    
+    # Customer Get Order History
+
+    get_customer_orders_history_input:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+      required:
+        - customer_id
+  
+    get_customer_orders_history:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/get_customer_orders_history_results'
+  
+    get_customer_orders_history_results:
+      type: object
+      properties:
+        order_id:
+          type: integer
+        customer_id:
+          type: integer
+        items_count:
+          type: integer
+        order_date:
+          type: string
+          format: datetime
+        order_weight:
+          type: number
+        payment_date:
+          type: string
+        payment_status:
+          type: string
+        total_price:
+          type: number
+    
+    
+    
+  requestBodies:
+    login:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/login_input'
+          examples:
+            Test Example 1:
+              $ref: '#/components/examples/login_input_1'
+            Test Example 2:
+              $ref: '#/components/examples/login_input_2'
+          
+    
+    order_history:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/get_customer_orders_history'
+          examples:
+            Test Example 1:
+              $ref: '#/components/examples/order_history_input_1'
+            
+  responses:
+    400:
+      description: BAD Request for Input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/bad_request'
+    500:
+      description: Internal Server for Input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/internal_server'
+    login:
+      description: login verification
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/login'
+          examples:
+            example1:
+              summary: Login Successful
+              $ref: '#/components/examples/login_output_1'
+            example2:
+              summary: Incorrect Password
+              $ref: '#/components/examples/login_output_2'
+            example3:
+              summary: Email not found
+              $ref: '#/components/examples/login_output_3'
+
+    order_history:
+      description: Customer Order History Retrieval
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/get_customer_orders_history'
+          examples:
+            Test Example 1:
+              $ref: '#/components/examples/order_history_output_1'
+            Test Example 2:
+              $ref: '#/components/examples/order_history_output_2'
+            
+  examples:
+    # Login
+    login_input_1:
+      summary: Login Successful Input
+      value:
+        email: "test@test.com"
+        password: "Test#123"
+    login_input_2:
+      summary: Login Failure Input
+      value:
+        email: "test@test.com"
+        password: "test#123"
+    login_output_1:
+      summary: Login Successful
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.74
+        results:
+          [ {
+            query_status: true,
+            message: "Login successful",
+            customer_id: 1
+          } ]
+    login_output_2:
+      summary: Incorrect Password
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.28
+        results:
+          [ {
+            query_status: false,
+            message: "Incorrect password",
+            customer_id: 0
+          } ]
+    login_output_3:
+      summary: Email not found
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.12
+        results:
+          [ {
+            query_status: false,
+            message: "Email not found",
+            customer_id: 0
+          } ]
+        
+    # Order History
+    order_history_input_1:
+      summary: Order Valid Input
+      value:
+        customer_id: 1
+    order_history_input_2:
+      summary: Order Invalid Input
+      value:
+        customer_id: 2123123
+    order_history_output_1:
+      summary: Order History List
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.74
+        results:
+          [
+            {
+              "customer_id": 1,
+              "items_count": 1,
+              "order_date": "2023-07-09T18:39:23",
+              "order_id": 1,
+              "order_weight": 10,
+              "payment_date": "2023-07-09T18:39:23",
+              "payment_status": "pending",
+              "total_price": 5.65
+            }
+          ]
+        
+    order_history_output_2:
+      summary: Order History Empty List
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.74
+        results:
+          []
+
+    
+    
+  
