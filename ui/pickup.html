@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">    
+  <link rel="icon" type="image/png" href="/logo-sm.png" />
+  <link rel="stylesheet" href="css/style.css">
+  <title>Campus Laundry</title>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+  <header>
+    <nav class="header__nav">
+      <div class="header__logo">
+        <img src="assets/Logo.png" alt="logo" />
+        <div class="header__logo-overlay"></div>
+      </div>
+
+      <ul class="header__menu" data-aos="fade-down">
+        <li>
+          <a href="/">Home</a>
+        </li>
+        <li>
+          <a href="/#menu">Membership</a>
+        </li>
+        <li>
+          <a href="/#food">WHY US</a>
+        </li>
+        <li>
+          <a href="/#services">CONTACT US</a>
+        </li>
+        <li>
+          <a href="">Login</a>
+        </li>
+      </ul>
+
+      <ul class="header__menu-mobile" data-aos="fade-down">
+        <li>
+          <img src="/assets/menu.svg" alt="menu" />
+        </li>
+      </ul>
+    </nav>
+  </header>
+  <br>
+  <br>
+  <div class="container-fluid">
+    <div class="div">
+        <img src="assets/Trees-Pattern.png" class="img-fluid" alt="img">
+    </div>
+    <br>
+    <br>
+    <div class="container text-center">
+
+          <br><br>
+        <div class="row align-items-start">
+          <div class="col-5">
+            <div class="card" style="background-color: rgb(247, 247, 247);">
+            <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+            <lottie-player src="https://assets10.lottiefiles.com/private_files/lf30_woaw2kkp.json"  background="transparent"  speed="1"  style="width: 500px; height: 600px;"  loop  autoplay></lottie-player>
+          </div>
+          </div>
+          <div class="col-7">
+            <div class="card" style="background-color:  rgb(247, 247, 247);">
+                <div class="card-body">
+                  <h5 class="card-title">Schedule Pickup</h5> <br>
+                  <h5 class="card-text">Date</h5>
+                  <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                    <input type="radio" class="btn-check" name="btnradio1" id="todayBtn" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="todayBtn">Today</label>
+                                        
+                    <input type="radio" class="btn-check" name="btnradio1" id="tomorrowBtn" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="tomorrowBtn">Tomorrow</label>
+                                        
+                    <input type="radio" class="btn-check" name="btnradio1" id="dayAfterTomorrowBtn" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="dayAfterTomorrowBtn">Day After Tomorrow</label>
+                  </div>
+                </br> </br>
+                <h5 class="card-text">Time</h5>
+                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                  <input type="radio" class="btn-check" name="btnradio2" id="btnradio11" autocomplete="off" checked>
+                  <label class="btn btn-outline-primary" for="btnradio11">7-10 AM</label>
+                
+                  <input type="radio" class="btn-check" name="btnradio2" id="btnradio22" autocomplete="off">
+                  <label class="btn btn-outline-primary" for="btnradio22">12-04 PM</label>
+                
+                  <input type="radio" class="btn-check" name="btnradio2" id="btnradio33" autocomplete="off">
+                  <label class="btn btn-outline-primary" for="btnradio33">06-09 PM</label>
+                </div>
+                  <br><br>
+                  <h5 class="card-text">Pickup and Delivery</h5>
+                  <select class="form-select" aria-label="Default select example">
+                    <option selected>Select Address</option>
+                    <option value="1">339, King St N, Waterloo</option>
+                    <option value="2">108 University Ave E, Waterloo</option>
+                    <option value="3">12 Bridgeport rd E, Waterloo</option>
+                  </select>
+                </div>
+                <br>
+                <a href="orderstatus.html">
+                <button type="button" class="btn btn-primary" style="width: 80%;margin-left: 10%;" disabled >Place Order</button>
+              </a>
+                <br><br>
+              </div>
+          </div>
+        </div>
+          <br><br>
+          
+      </div>
+      
+  </div>  
+
+
+  <script>
+   
+    document.addEventListener("DOMContentLoaded", function() {
+      // Function to format the date as 'MMMM D' (e.g., 'July 15')
+      function formatDate(date) {
+        return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+      }
+
+      // Function to check if all required fields are selected
+      function checkOrderValidity() {
+        const dateSelected = document.querySelector('input[name="btnradio1"]:checked');
+        const timeSelected = document.querySelector('input[name="btnradio2"]:checked');
+        const addressSelected = document.querySelector('.form-select').value;
+
+        const placeOrderButton = document.querySelector(".btn-primary");
+        placeOrderButton.disabled = !(dateSelected && timeSelected && addressSelected !== "Select Address");
+      }
+
+      // Get today's date
+      const today = new Date();
+
+      // Set the date for the Today button
+      const todayBtnLabel = document.querySelector('[for="todayBtn"]');
+      todayBtnLabel.textContent = formatDate(today);
+
+      // Calculate tomorrow's date
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+
+      // Set the date for the Tomorrow button
+      const tomorrowBtnLabel = document.querySelector('[for="tomorrowBtn"]');
+      tomorrowBtnLabel.textContent = formatDate(tomorrow);
+
+      // Calculate the day after tomorrow's date
+      const dayAfterTomorrow = new Date(today);
+      dayAfterTomorrow.setDate(today.getDate() + 2);
+
+      // Set the date for the Day After Tomorrow button
+      const dayAfterTomorrowBtnLabel = document.querySelector('[for="dayAfterTomorrowBtn"]');
+      dayAfterTomorrowBtnLabel.textContent = formatDate(dayAfterTomorrow);
+
+      // Event listeners to monitor changes in the form elements
+      const formElements = document.querySelectorAll('input[name="btnradio1"], input[name="btnradio2"], .form-select');
+      formElements.forEach(element => {
+        element.addEventListener("change", checkOrderValidity);
+      });
+    });
+  </script>
+  
+</body>
+</html>
