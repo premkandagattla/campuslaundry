@@ -1,5 +1,6 @@
 Flask==2.2.3
 connexion[swagger-ui]
+Flask-Cors
 Flask-Injector
 pycryptodome
 pyodbc

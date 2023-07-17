@@ -4,6 +4,7 @@ import connexion
 from flask import render_template
 from common.json_lib import JsonSerializable
 from connexion.exceptions import BadRequestProblem
+from flask_cors import CORS
 
 logging.basicConfig(level=logging.INFO)
 app = connexion.FlaskApp(__name__, specification_dir='specs/')
@@ -18,6 +19,7 @@ app.add_api(
     strict_validation=True
 )
 
+CORS(app.app, origins="*")
 
 def handle_validation_error(exception):
     response_body = JsonSerializable()
