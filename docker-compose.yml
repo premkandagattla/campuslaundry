@@ -23,13 +23,13 @@ services:
       - '5000:5000'
     
 
-  # ui:
-  #   container_name: ui
-  #   links:
-  #     - "backend"
-  #   build: ./ui/
-  #   ports:
-  #     - '8080:80'
+  ui:
+    container_name: ui
+    links:
+      - "backend"
+    build: ./ui/
+    ports:
+      - '8080:80'
 
 volumes:
   db-volume:
