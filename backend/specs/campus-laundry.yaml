@@ -584,6 +584,7 @@ paths:
           
           
           
+          
   # Customer Order Details Section
   # Create Customer Order
   /cl_set_customer_order:
@@ -952,6 +953,23 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/order_list'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  
+  /cl_get_orders_overview:
+    get:
+      summary: Get employee orders overview
+      tags:
+        - Employees
+      description: |
+        ## Get employee orders overview
+        ---
+      operationId: api.cl_get_orders_overview.get
+      responses:
+        '200':
+          $ref: '#/components/responses/orders_overview'
         '400':
           $ref: '#/components/responses/400'
         '500':
@@ -1567,6 +1585,28 @@ components:
         address:
           type: string
   
+    # Employee Order Overview
+    orders_overview:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/orders_overview_results'
+    orders_overview_results:
+      type: object
+      properties:
+        today_order_count:
+          type: integer
+          default: 1
+        today_revenue:
+          type: number
+          default: 1.2
+        total_revenue:
+          type: number
+  
     # Customer Get Order Details BY Order ID
     
     get_customer_order_by_id_input:
@@ -1579,7 +1619,6 @@ components:
       required:
         - customer_id
         - order_id
-    
     get_customer_order_by_id:
       type: object
       properties:
@@ -1589,7 +1628,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/get_customer_order_by_id_results'
-    
     get_customer_order_by_id_results:
       type: object
       properties:
@@ -1634,7 +1672,6 @@ components:
           type: integer
       required:
         - customer_id
-  
     get_customer_orders_history:
       type: object
       properties:
@@ -1644,7 +1681,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/get_customer_orders_history_results'
-  
     get_customer_orders_history_results:
       type: object
       properties:
@@ -1669,7 +1705,6 @@ components:
     
     
     
-  
   # Request Bodies
   requestBodies:
     # Login
@@ -1726,6 +1761,7 @@ components:
               $ref: '#/components/examples/order_list_input_1'
             Test Example 2:
               $ref: '#/components/examples/order_list_input_2'
+    
   
   # Responses
   responses:
@@ -1808,9 +1844,17 @@ components:
               $ref: '#/components/examples/order_list_output_2'
             Test Example 3:
               $ref: '#/components/examples/order_list_output_3'
-  
-  
-  
+    orders_overview:
+      description: Employee Order Overview Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/orders_overview'
+          examples:
+            Test Example 1:
+              $ref: '#/components/examples/orders_overview_output_1'
+            Test Example 2:
+              $ref: '#/components/examples/orders_overview_output_2'
   
   # Examples
   examples:
@@ -2010,7 +2054,6 @@ components:
             message: "Email not found",
             emp_id: 0
           } ]
-  
     # Employee Order list
     order_list_input_1:
       summary: Employee new orders List
@@ -2066,6 +2109,37 @@ components:
           time_taken: 0.12
         results:
           [ ]
+  
+    # Employee Order Overview
+    orders_overview_output_1:
+      summary: Employee Order overview having revenue output
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.74
+        results: [ {
+            "today_order_count": 1,
+            "today_revenue": 1,
+            "total_revenue": 5.65
+          } ]
+    orders_overview_output_2:
+      summary: Employee Order overview empty
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.28
+        results:
+          [ {
+            "today_order_count": 0,
+            "today_revenue": 0,
+            "total_revenue": 0
+          } ]
 
 
     

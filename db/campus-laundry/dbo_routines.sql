@@ -296,9 +296,9 @@ CREATE DEFINER=`root`@`%` PROCEDURE `usp_get_orders_overview`(
 )
 BEGIN
     SELECT 
-        (select count(*) from orders o WHERE DATE(o.order_date) = DATE(now())) as todays_order_count,
-        (select ROUND(sum(total_price),2) from orders o left join payments as p on o.order_id = p.order_id where DATE(o.order_date) = DATE(now()) AND p.payment_status = 'success') as todays_revenue,
-        (select ROUND(sum(total_price),2) from orders  o left join payments as p on o.order_id = p.order_id where p.payment_status = 'success') as total_revenue;
+        (select count(*) from orders o WHERE DATE(o.order_date) = DATE(now())) as today_order_count,
+        coalesce((select ROUND(sum(total_price),2) from orders o left join payments as p on o.order_id = p.order_id where DATE(o.order_date) = DATE(now()) AND p.payment_status = 'success'), 0) as today_revenue,
+        coalesce((select ROUND(sum(total_price),2) from orders  o left join payments as p on o.order_id = p.order_id where p.payment_status = 'success'),0) as total_revenue;
 
 END ;;
 DELIMITER ;
