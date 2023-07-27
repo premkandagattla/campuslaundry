@@ -688,6 +688,8 @@ sp: BEGIN
     UPDATE order_status
     SET order_status = p_order_status
     where order_id = p_order_id;
+
+    SELECT 'true' AS query_status, 'Order updated successfully' AS message, p_order_id AS order_id;
     
 END ;;
 DELIMITER ;
@@ -723,6 +725,8 @@ sp: BEGIN
     UPDATE payments
     SET payment_status = p_payment_status
     where order_id = p_order_id;
+
+    SELECT 'true' AS query_status, 'Payment updated successfully' AS message, p_order_id AS order_id;
     
 END ;;
 DELIMITER ;

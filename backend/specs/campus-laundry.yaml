@@ -938,6 +938,7 @@ paths:
         '500':
           $ref: '#/components/responses/500'
           
+  
   /cl_get_order_list:
     post:
       summary: Get employee order list
@@ -974,12 +975,51 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
-
+          
+  /cl_set_order_status:
+    post:
+      summary: Set Order Status
+      tags:
+        - Employees
+      description: |
+        ## Set Order Status
+        ---
+      operationId: api.cl_set_order_status.post
+      requestBody:
+        required: true
+        $ref: '#/components/requestBodies/set_order_status'
+      responses:
+        '200':
+          $ref: '#/components/responses/set_order_status'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  
+  /cl_set_payment_status:
+    post:
+      summary: Set Payment Status
+      tags:
+        - Employees
+      description: |
+        ## Set Payment Status
+        ---
+      operationId: api.cl_set_payment_status.post
+      requestBody:
+        required: true
+        $ref: '#/components/requestBodies/set_payment_status'
+      responses:
+        '200':
+          $ref: '#/components/responses/set_payment_status'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  
 components:
   # Schemas
   schemas:
     # Common Schemas
-    
     result_headers:
       type: object
       properties:
@@ -998,7 +1038,6 @@ components:
         time_taken:
           type: number
           description: total time taken for the operation
-    
     bad_request:
       type: object
       properties:
@@ -1023,7 +1062,6 @@ components:
           type: array
           default: []
           
-    
     internal_server:
       type: object
       properties:
@@ -1051,7 +1089,6 @@ components:
       
     
     # login Section
-    
     login:
       type: object
       properties:
@@ -1093,7 +1130,6 @@ components:
           
     
     # Registration Section
-    
     registration:
       type: object
       properties:
@@ -1148,7 +1184,6 @@ components:
           default: "Registration successful"
     
     # Laundry Dry Clean Prices
-    
     laundry_items_input:
       type: object
       properties:
@@ -1156,7 +1191,6 @@ components:
           type: boolean
       required:
         - wash
-    
     laundry_items:
       type: object
       properties:
@@ -1166,7 +1200,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/laundry_items_results'
-    
     laundry_items_results:
       type: object
       properties:
@@ -1185,7 +1218,6 @@ components:
         
    
     # Customer Information Section
-
     customer_details_input:
       type: object
       properties:
@@ -1197,7 +1229,6 @@ components:
           default: "test@test.com"
       required:
         - email
-    
     customer_details:
       type: object
       properties:
@@ -1207,7 +1238,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/customer_details_results'
-    
     customer_details_results:
       type: object
       properties:
@@ -1230,7 +1260,6 @@ components:
           
     
     # Customer Set Address
-    
     set_customer_address_input:
       type: object
       properties:
@@ -1269,8 +1298,7 @@ components:
         - longitude
         - address_id
           
-          
-    
+        
     set_customer_address:
       type: object
       properties:
@@ -1280,7 +1308,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/set_customer_address_results'
-    
     set_customer_address_results:
       type: object
       properties:
@@ -1293,7 +1320,6 @@ components:
       
     
     # Customer Get Address
-    
     get_customer_address_input:
       type: object
       properties:
@@ -1302,7 +1328,6 @@ components:
           default: 2
       required:
         - customer_id
-  
     get_customer_address:
       type: object
       properties:
@@ -1312,7 +1337,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/get_customer_address_results'
-
     get_customer_address_results:
       type: object
       properties:
@@ -1333,7 +1357,6 @@ components:
           
     
     # Customer Address Status
-    
     set_customer_address_status_input:
       type: object
       properties:
@@ -1348,7 +1371,6 @@ components:
         - customer_id
         - address_id
         - active
-
     set_customer_address_status:
       type: object
       properties:
@@ -1369,9 +1391,7 @@ components:
           
     
     # Customer Create Order
-    
       # INPUTS
-    
     set_customer_order_input:
       type: object
       properties:
@@ -1404,7 +1424,6 @@ components:
         - laundry_items
         - pickup_details
         - order_weight
-    
     order_laundry_items:
       type: object
       properties:
@@ -1421,7 +1440,6 @@ components:
         - quantity
         - price
         - laundry_type
-    
     order_pickup_details:
       type: object
       properties:
@@ -1442,7 +1460,6 @@ components:
         - address_id
 
       # Calling API
-    
     set_customer_order:
       type: object
       properties:
@@ -1452,7 +1469,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/set_customer_order_results'
-    
     set_customer_order_results:
       type: object
       properties:
@@ -1465,8 +1481,8 @@ components:
           nullable: true
           
           
-    # Employee Details
     
+    # Employee Details
     employee_details:
       type: object
       properties:
@@ -1503,7 +1519,6 @@ components:
           type: string
   
     # Employee Login
-
     employee_login:
       type: object
       properties:
@@ -1606,9 +1621,82 @@ components:
           default: 1.2
         total_revenue:
           type: number
+          
+    # Set Order Status
+    set_order_status:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/set_order_status_results'
+    set_order_status_input:
+      type: object
+      properties:
+        order_id:
+          type: integer
+          default: 1
+        customer_id:
+          type: integer
+          default: 1
+        order_status:
+          type: string
+          minLength: 1
+          default: "created"
+      required:
+        - order_id
+        - order_status
+    set_order_status_results:
+      type: object
+      properties:
+        order_id:
+          type: integer
+          default: 1
+        query_status:
+          type: boolean
+        message:
+          type: string
+    
+    # Set Payment Status
+    set_payment_status:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/set_payment_status_results'
+    set_payment_status_input:
+      type: object
+      properties:
+        order_id:
+          type: integer
+          default: 1
+        customer_id:
+          type: integer
+          default: 1
+        payment_status:
+          type: string
+          minLength: 1
+          default: "created"
+      required:
+        - order_id
+        - payment_status
+    set_payment_status_results:
+      type: object
+      properties:
+        order_id:
+          type: integer
+          default: 1
+        query_status:
+          type: boolean
+        message:
+          type: string
   
     # Customer Get Order Details BY Order ID
-    
     get_customer_order_by_id_input:
       type: object
       properties:
@@ -1664,7 +1752,6 @@ components:
           
     
     # Customer Get Order History
-
     get_customer_orders_history_input:
       type: object
       properties:
@@ -1701,10 +1788,8 @@ components:
           type: string
         total_price:
           type: number
-    
-    
-    
-    
+       
+  
   # Request Bodies
   requestBodies:
     # Login
@@ -1761,6 +1846,31 @@ components:
               $ref: '#/components/examples/order_list_input_1'
             Test Example 2:
               $ref: '#/components/examples/order_list_input_2'
+              
+    # Set Order Status
+    set_order_status:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/set_order_status_input'
+          examples:
+            Test Example 1:
+              $ref: '#/components/examples/set_order_status_input_1'
+            Test Example 2:
+              $ref: '#/components/examples/set_order_status_input_2'
+              
+    
+    # Set Payment Status
+    set_payment_status:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/set_payment_status_input'
+          examples:
+            Test Example 1:
+              $ref: '#/components/examples/set_payment_status_input_1'
+            Test Example 2:
+              $ref: '#/components/examples/set_payment_status_input_2'
     
   
   # Responses
@@ -1855,6 +1965,28 @@ components:
               $ref: '#/components/examples/orders_overview_output_1'
             Test Example 2:
               $ref: '#/components/examples/orders_overview_output_2'
+    set_order_status:
+      description: Set Order Status
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/set_order_status'
+          examples:
+            Test Example 1:
+              $ref: '#/components/examples/set_order_status_output_1'
+            Test Example 2:
+              $ref: '#/components/examples/set_order_status_output_2'
+    set_payment_status:
+      description: Set Payment Status
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/set_payment_status'
+          examples:
+            Test Example 1:
+              $ref: '#/components/examples/set_payment_status_output_1'
+            Test Example 2:
+              $ref: '#/components/examples/set_payment_status_output_2'
   
   # Examples
   examples:
@@ -2140,6 +2272,93 @@ components:
             "today_revenue": 0,
             "total_revenue": 0
           } ]
+  
+    # Set Order Status
+    set_order_status_input_1:
+      summary: Set Order Status - Waiting for pickup
+      value:
+        order_id: 1
+        order_status: waiting for pickup
+        customer_id: 1
+    set_order_status_input_2:
+      summary: Set Order Status - Invalid Order Id
+      value:
+        order_id: 1123
+        order_status: in wash
+        customer_id: 1
+    set_order_status_output_1:
+      summary: Set Order Status output - Success
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.74
+        results: [ {
+          "query_status": true,
+          "message": "Order updated successfully",
+          "order_id": 1
+        } ]
+    set_order_status_output_2:
+      summary: Set Order Status output - Failed
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.28
+        results:
+          [ {
+            "query_status": false,
+            "message": "order id and customer id mismatch",
+            "order_id": 1
+          } ]
+  
+    # Set Order Status
+    set_payment_status_input_1:
+      summary: Set Payment Status - Success
+      value:
+        order_id: 1
+        payment_status: success
+        customer_id: 1
+    set_payment_status_input_2:
+      summary: Set Payment Status - Invalid Order Id
+      value:
+        order_id: 1123
+        payment_status: success
+        customer_id: 1
+    set_payment_status_output_1:
+      summary: Set Payment Status output - Success
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.74
+        results: [ {
+          "query_status": true,
+          "message": "Payment updated successfully",
+          "order_id": 1
+        } ]
+    set_payment_status_output_2:
+      summary: Set Payment Status output - Failed
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.28
+        results:
+          [ {
+            "query_status": false,
+            "message": "order id and customer id mismatch",
+            "order_id": 1
+          } ]
+    
 
 
     
