@@ -936,6 +936,26 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
+          
+  /cl_get_order_list:
+    post:
+      summary: Get employee order list
+      tags:
+        - Employees
+      description: |
+        ## Get employee order list
+        ---
+      operationId: api.cl_get_order_list.post
+      requestBody:
+        required: true
+        $ref: '#/components/requestBodies/order_list'
+      responses:
+        '200':
+          $ref: '#/components/responses/order_list'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
 
 components:
   # Schemas
@@ -1464,7 +1484,7 @@ components:
         phone_number:
           type: string
   
-    # Employee Details
+    # Employee Login
 
     employee_login:
       type: object
@@ -1509,7 +1529,44 @@ components:
           default: 1
         
     
-    
+    # Employee Order List
+    order_list:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/order_list_results'
+    order_list_input:
+      type: object
+      properties:
+        order_status:
+          type: string
+          minLength: 1
+          pattern: ^(pending|completed)$
+          default: "pending"
+      required:
+        - order_status
+    order_list_results:
+      type: object
+      properties:
+        order_id:
+          type: integer
+          default: 1
+        customer_id:
+          type: integer
+          default: 1
+        items_count:
+          type: integer
+        order_status:
+          type: string
+        order_date:
+          type: string
+        address:
+          type: string
+  
     # Customer Get Order Details BY Order ID
     
     get_customer_order_by_id_input:
@@ -1612,6 +1669,7 @@ components:
     
     
     
+  
   # Request Bodies
   requestBodies:
     # Login
@@ -1657,9 +1715,17 @@ components:
               $ref: '#/components/examples/employee_login_input_1'
             Test Example 2:
               $ref: '#/components/examples/employee_login_input_2'
-  
-  
-  
+    # Employee Order list
+    order_list:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/order_list_input'
+          examples:
+            Test Example 1:
+              $ref: '#/components/examples/order_list_input_1'
+            Test Example 2:
+              $ref: '#/components/examples/order_list_input_2'
   
   # Responses
   responses:
@@ -1729,6 +1795,22 @@ components:
               $ref: '#/components/examples/employee_login_output_3'
             
             
+    order_list:
+      description: Employee Order list Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/order_list'
+          examples:
+            Test Example 1:
+              $ref: '#/components/examples/order_list_output_1'
+            Test Example 2:
+              $ref: '#/components/examples/order_list_output_2'
+            Test Example 3:
+              $ref: '#/components/examples/order_list_output_3'
+  
+  
+  
   
   # Examples
   examples:
@@ -1928,6 +2010,62 @@ components:
             message: "Email not found",
             emp_id: 0
           } ]
+  
+    # Employee Order list
+    order_list_input_1:
+      summary: Employee new orders List
+      value:
+        order_status: pending
+    order_list_input_2:
+      summary: Employee completed orders List
+      value:
+        order_status: completed
+    order_list_output_1:
+      summary: Employee new orders list output
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.74
+        results: [ {
+          "address": "311 Woolwich St,Waterloo,Ontario,Canada,N2K 0H4",
+          "customer_id": 1,
+          "items_count": 1,
+          "order_date": "2023-07-09T18:39:23",
+          "order_id": 1,
+          "order_status": "created"
+        } ]
+    order_list_output_2:
+      summary: Employee completed orders list output
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.28
+        results:
+          [ {
+          "address": "311 Woolwich St,Waterloo,Ontario,Canada,N2K 0H4",
+          "customer_id": 1,
+          "items_count": 1,
+          "order_date": "2023-07-09T18:39:23",
+          "order_id": 1,
+          "order_status": "completed"
+        } ]
+    order_list_output_3:
+      summary: Empty order list
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.12
+        results:
+          [ ]
 
 
     
