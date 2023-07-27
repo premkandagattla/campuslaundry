@@ -184,6 +184,76 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `usp_get_employee_details` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `usp_get_employee_details`(
+    IN p_email VARCHAR(100)
+)
+BEGIN
+    SELECT emp_id, first_name, 
+        last_name, email, 
+        phone_number
+    FROM employees 
+    WHERE email = p_email;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `usp_get_employee_login` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `usp_get_employee_login`(
+	IN p_email VARCHAR(100),
+    IN p_password TEXT,
+    IN p_role VARCHAR(20)
+)
+BEGIN
+	DECLARE v_EmpID INT;
+    
+    SELECT emp_id INTO v_EmpID  
+    FROM employees WHERE email = p_email;
+    
+    IF v_EmpID IS NOT NULL THEN
+        IF EXISTS (
+            SELECT 1
+            FROM employees
+            WHERE emp_id = v_EmpID
+              AND `password` = p_password
+              AND `role` = p_role
+        ) THEN
+            -- Password is correct
+            SELECT 'true' AS query_status, 'Login successful' AS message, v_EmpID AS emp_id;
+        ELSE
+            -- Password is incorrect
+            SELECT 'false' AS query_status, 'Incorrect password or role mismatch' AS message, 0 AS emp_id;
+        END IF;
+    ELSE
+        -- Email does not exist
+        SELECT 'false' AS query_status, 'Email not found' AS message, 0 AS emp_id;
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `usp_get_laundry_items` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -206,6 +276,72 @@ BEGIN
         SELECT product_id, product_name, product_fabric, COALESCE(price, 0) AS price
         FROM laundry_products;
     END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `usp_get_orders_overview` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `usp_get_orders_overview`(
+)
+BEGIN
+    SELECT 
+        (select count(*) from orders o WHERE DATE(o.order_date) = DATE(now())) as todays_order_count,
+        (select ROUND(sum(total_price),2) from orders o left join payments as p on o.order_id = p.order_id where DATE(o.order_date) = DATE(now()) AND p.payment_status = 'success') as todays_revenue,
+        (select ROUND(sum(total_price),2) from orders  o left join payments as p on o.order_id = p.order_id where p.payment_status = 'success') as total_revenue;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `usp_get_order_list` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `usp_get_order_list`(
+    IN p_order_status varchar(20)
+)
+BEGIN
+
+    IF p_order_status = 'completed'  THEN
+            SELECT o.order_id, o.customer_id, 
+					o.items_count,   
+					os.order_status,
+					o.order_date,
+					(select CONCAT(street,",", city,",", province,",",country,",", postal_code) from customer_address ca inner join order_pickup_details opt on ca.address_id = opt.address_id WHERE opt.order_id = o.order_id) as address
+			FROM orders o 
+			left join order_status os on o.order_id = os.order_id
+			WHERE os.order_status = 'completed'
+			order by o.order_date desc;
+	ELSE
+		SELECT o.order_id, o.customer_id, 
+				o.items_count,   
+				os.order_status,
+				o.order_date,
+				(select CONCAT(street,",", city,",", province,",",country,",", postal_code) from customer_address ca inner join order_pickup_details opt on ca.address_id = opt.address_id WHERE opt.order_id = o.order_id) as address
+		FROM orders o 
+		left join order_status os on o.order_id = os.order_id
+		WHERE os.order_status <> 'completed'
+		order by o.order_date desc;
+	END IF;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -536,6 +672,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`%` PROCEDURE `usp_set_order_status`(
     IN p_order_id INT,
+    IN p_customer_id INT,
     IN p_order_status varchar(100)
 )
 sp: BEGIN
@@ -558,6 +695,41 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `usp_set_payment_status` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `usp_set_payment_status`(
+    IN p_order_id INT,
+	IN p_customer_id INT,
+    IN p_payment_status varchar(100)
+)
+sp: BEGIN
+	    
+	IF (p_order_id is not null) 
+		AND 
+		NOT EXISTS(SELECT 1 FROM orders WHERE order_id = p_order_ID AND customer_id = p_customer_id) 
+	THEN
+		SELECT 'false' AS query_status, 'order id and customer id mismatch' AS message, p_order_id AS order_id;
+		LEAVE sp;
+	END IF;
+    
+    UPDATE payments
+    SET payment_status = p_payment_status
+    where order_id = p_order_id;
+    
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -568,4 +740,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-21 11:12:51
+-- Dump completed on 2023-07-26 22:29:35
