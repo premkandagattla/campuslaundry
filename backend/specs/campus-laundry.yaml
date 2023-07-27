@@ -11,6 +11,7 @@ tags:
   - {name: "Customer Profile", description: "Customer Profile Information API's"}
   - {name: "Customer Order", description: "Customer Order Information API's"}
   - {name: "Laundry Items", description: "Laundry Items Information API's"}
+  - {name: "Employees", description: "Employees Information API's"}
 
 servers:
   - url: /campus-laundry
@@ -582,8 +583,9 @@ paths:
           
           
           
+          
   # Customer Order Details Section
-
+  # Create Customer Order
   /cl_set_customer_order:
     post:
       summary: Create Customer Order
@@ -793,7 +795,7 @@ paths:
         'default':
           description: unexpected error
           
-  
+  # Get Customer Order by ID
   /cl_get_customer_order_by_order_id:
     post:
       summary: Get Customer Order By Order ID
@@ -871,8 +873,7 @@ paths:
         'default':
           description: unexpected error
         
-
-
+  # Get Customer Order History
   /cl_get_customer_orders_history:
     post:
       summary: Get Customer Orders History
@@ -892,8 +893,52 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
+          
+  
+  # Employee Details
+  /cl_get_employee_details:
+    post:
+      summary: Get employee details
+      tags:
+        - Employees
+      description: |
+        ## Get employee details
+        ---
+      operationId: api.cl_get_employee_details.post
+      requestBody:
+        required: true
+        $ref: '#/components/requestBodies/employee_details'
+      responses:
+        '200':
+          $ref: '#/components/responses/employee_details'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+          
+  # Employee Login
+  /cl_get_employee_login:
+    post:
+      summary: Get employee login
+      tags:
+        - Employees
+      description: |
+        ## Get employee login
+        ---
+      operationId: api.cl_get_employee_login.post
+      requestBody:
+        required: true
+        $ref: '#/components/requestBodies/employee_login'
+      responses:
+        '200':
+          $ref: '#/components/responses/employee_login'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
 
 components:
+  # Schemas
   schemas:
     # Common Schemas
     
@@ -969,6 +1014,15 @@ components:
     
     # login Section
     
+    login:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/login_results'
     login_input:
       type: object
       properties:
@@ -985,17 +1039,6 @@ components:
       required:
         - email
         - password
-    
-    login:
-      type: object
-      properties:
-        header:
-          $ref: '#/components/schemas/result_headers'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/login_results'
-    
     login_results:
       type: object
       properties:
@@ -1013,6 +1056,15 @@ components:
     
     # Registration Section
     
+    registration:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/registration_results'
     registration_input:
       type: object
       properties:
@@ -1047,17 +1099,6 @@ components:
         - email
         - password
         - phone_number
-
-    registration:
-      type: object
-      properties:
-        header:
-          $ref: '#/components/schemas/result_headers'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/registration_results'
-
     registration_results:
       type: object
       properties:
@@ -1252,6 +1293,7 @@ components:
         postal_code:
           type: string
           
+    
     # Customer Address Status
     
     set_customer_address_status_input:
@@ -1384,6 +1426,88 @@ components:
           type: integer
           nullable: true
           
+          
+    # Employee Details
+    
+    employee_details:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/employee_details_results'
+    employee_details_input:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+          pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
+          default: "admin@campuslaundry.com"
+      required:
+        - email
+    employee_details_results:
+      type: object
+      properties:
+        emp_id:
+          type: integer
+          default: 1
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        phone_number:
+          type: string
+  
+    # Employee Details
+
+    employee_login:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/employee_login_results'
+    employee_login_input:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+          pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
+          default: "admin@campuslaundry.com"
+        password:
+          type: string
+          minLength: 1
+          default: "Test#123"
+        role:
+          type: string
+          pattern: ^(admin|delivery)$
+      required:
+        - email
+        - password
+        - role
+    employee_login_results:
+      type: object
+      properties:
+        query_status:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: "Login successful"
+        emp_id:
+          type: integer
+          default: 1
+        
     
     
     # Customer Get Order Details BY Order ID
@@ -1487,7 +1611,10 @@ components:
     
     
     
+    
+  # Request Bodies
   requestBodies:
+    # Login
     login:
       content:
         application/json:
@@ -1498,17 +1625,43 @@ components:
               $ref: '#/components/examples/login_input_1'
             Test Example 2:
               $ref: '#/components/examples/login_input_2'
-          
-    
+    # Order History
     order_history:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/get_customer_orders_history'
+            $ref: '#/components/schemas/get_customer_orders_history_input'
           examples:
             Test Example 1:
               $ref: '#/components/examples/order_history_input_1'
-            
+    # Employee Details
+    employee_details:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/employee_details_input'
+          examples:
+            Test Example 1:
+              $ref: '#/components/examples/employee_details_input_1'
+            Test Example 2:
+              $ref: '#/components/examples/employee_details_input_2'
+              
+    # Employee Login
+    employee_login:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/employee_login_input'
+          examples:
+            Test Example 1:
+              $ref: '#/components/examples/employee_login_input_1'
+            Test Example 2:
+              $ref: '#/components/examples/employee_login_input_2'
+  
+  
+  
+  
+  # Responses
   responses:
     400:
       description: BAD Request for Input
@@ -1538,7 +1691,6 @@ components:
             example3:
               summary: Email not found
               $ref: '#/components/examples/login_output_3'
-
     order_history:
       description: Customer Order History Retrieval
       content:
@@ -1550,7 +1702,35 @@ components:
               $ref: '#/components/examples/order_history_output_1'
             Test Example 2:
               $ref: '#/components/examples/order_history_output_2'
+              
+    employee_details:
+      description: Employee details Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/employee_details'
+          examples:
+            Test Example 1:
+              $ref: '#/components/examples/employee_details_output_1'
+            Test Example 2:
+              $ref: '#/components/examples/employee_details_output_2'
+    employee_login:
+      description: Employee details Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/employee_login'
+          examples:
+            Test Example 1:
+              $ref: '#/components/examples/employee_login_output_1'
+            Test Example 2:
+              $ref: '#/components/examples/employee_login_output_2'
+            Test Example 3:
+              $ref: '#/components/examples/employee_login_output_3'
             
+            
+  
+  # Examples
   examples:
     # Login
     login_input_1:
@@ -1609,6 +1789,7 @@ components:
             customer_id: 0
           } ]
         
+        
     # Order History
     order_history_input_1:
       summary: Order Valid Input
@@ -1650,9 +1831,104 @@ components:
           status: 200
           rows_returned: 1
           time_taken: 0.74
+        results: []
+        
+    # Employee Details
+    employee_details_input_1:
+      summary: Employee details Admin
+      value:
+        email: admin@campuslaundry.com
+    employee_details_input_2:
+      summary: Employee details Delivery
+      value:
+        email: prem@campuslaundry.com
+    employee_details_output_1:
+      summary: Employee Details Output - Valid Data
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.74
+        results: [{
+          "email": "admin@campuslaundry.com",
+          "emp_id": 1,
+          "first_name": "Campus",
+          "last_name": "Laundry",
+          "phone_number": "8889999999"
+        }]
+    employee_details_output_2:
+      summary: Employee Details Output - Empty List
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.74
+        results: []
+        
+        
+        
+    # Employee Login
+    employee_login_input_1:
+      summary: Employee login Admin
+      value:
+        email: admin@campuslaundry.com
+        password: Admin#123@123
+        role: admin
+    employee_login_input_2:
+      summary: Employee login Delivery
+      value:
+        email: prem@campuslaundry.com
+        password: Abc#123@123
+        role: delivery
+    employee_login_output_1:
+      summary: Employee Details Output
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.74
+        results: [{
+          "emp_id": 1,
+          "message": "Login successful",
+          "query_status": true
+        }]
+    employee_login_output_2:
+      summary: Incorrect Password or role mismatch
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.28
         results:
-          []
+          [ {
+            query_status: false,
+            message: "Incorrect password or role mismatch",
+            emp_id: 0
+          } ]
+    employee_login_output_3:
+      summary: Email not found
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.12
+        results:
+          [ {
+            query_status: false,
+            message: "Email not found",
+            emp_id: 0
+          } ]
 
-    
+
     
   

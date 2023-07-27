@@ -39,6 +39,9 @@ class MYSQL:
 
             server_windows = sys.platform
 
+            if server_windows == "win32":
+                server_name = '127.0.0.1'
+
             conn = mysql.connector.connect(user=username, password=passwd,
                                            host=server_name,
                                            port=port,
