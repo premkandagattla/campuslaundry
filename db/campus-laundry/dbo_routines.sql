@@ -174,7 +174,12 @@ sp: BEGIN
                 'pickup_date', opt.pickup_date,
                 'pickup_time', opt.pickup_time,
                 'address_id', (select CONCAT(street,",", city,",", province,",",country,",", postal_code) from customer_address ca where ca.address_id = opt.address_id)
-            ) FROM order_pickup_details opt WHERE opt.order_id = o.order_id) AS pickup_details
+            ) FROM order_pickup_details opt WHERE opt.order_id = o.order_id) AS pickup_details,
+            (SELECT JSON_OBJECT(
+                'wash_type', mst.wash_type,
+                'water_temp', mst.water_temp,
+                'spin_speed', mst.spin_speed
+            ) FROM machine_setting mst WHERE mst.order_id = o.order_id) AS machine_settings
     FROM orders o left join payments p on o.order_id = p.order_id
     where o.order_id = p_order_id and o.customer_id = p_customer_id;
     
@@ -468,6 +473,7 @@ CREATE DEFINER=`root`@`%` PROCEDURE `usp_set_customer_order`(
     IN p_total_price FLOAT,
     IN p_laundry_items JSON,
     IN p_pickup_details JSON,
+    IN p_machine_setting JSON,
     IN p_order_weight FLOAT,
     IN p_subscribed_id INT,
     IN p_order_id INT
@@ -572,6 +578,8 @@ sp:BEGIN
         address_id INT    
     );
     
+    
+    
     INSERT INTO orderPickupTest (order_id, pickup_date, pickup_time, address_id)
     SELECT p_order_id, op_jt.pickup_date, op_jt.pickup_time, op_jt.address_id
     FROM JSON_TABLE(p_pickup_details,
@@ -595,7 +603,41 @@ sp:BEGIN
      ON DUPLICATE KEY UPDATE
          order_pickup_details.pickup_date = opt.pickup_date,
          order_pickup_details.pickup_time = opt.pickup_time,
-         order_pickup_details.address_id = opt.address_id;         
+         order_pickup_details.address_id = opt.address_id;
+    
+    DROP TEMPORARY TABLE IF EXISTS machineSettingTest;
+    CREATE TEMPORARY TABLE machineSettingTest(
+		`order_id` int,
+		`wash_type` varchar(50),
+		`water_temp` varchar(50),
+		`spin_speed` varchar(50)
+    );
+    
+    INSERT INTO machineSettingTest(order_id, wash_type, water_temp,spin_speed)
+    SELECT p_order_id,ms_jt.wash_type,ms_jt.water_temp,ms_jt.spin_speed
+    FROM JSON_TABLE(p_machine_setting,
+		'$' 
+        COLUMNS(
+			wash_type varchar(50) PATH '$.wash_type',
+            water_temp varchar(50) PATH '$.water_temp',
+            spin_speed varchar(50) PATH '$.spin_speed'
+        ) 
+	)AS ms_jt;
+    
+    INSERT INTO machine_setting
+    (order_id, wash_type, water_temp, spin_speed)
+    SELECT 
+		mst.order_id,
+        mst.wash_type,
+        mst.water_temp,
+        mst.spin_speed
+	FROM machineSettingTest mst
+    ON DUPLICATE KEY UPDATE
+		machine_setting.wash_type = mst.wash_type,
+        machine_setting.water_temp = mst.water_temp,
+        machine_setting.spin_speed = mst.spin_speed;
+    
+             
 		
     IF `_rollback` THEN
 		ROLLBACK;  
@@ -744,4 +786,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-26 22:29:35
+-- Dump completed on 2023-07-31 10:13:50

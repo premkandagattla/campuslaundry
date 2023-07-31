@@ -622,6 +622,11 @@ paths:
                     pickup_time: '08:00:00',
                     address_id: 1
                   }
+                  machine_settings: {
+                    wash_type: 'normal',
+                    water_temp: 'cold',
+                    spin_speed: 'low'
+                  }
                   order_weight: 10
               Test Example 2:
                 summary: Set Customer Order Not Found
@@ -639,6 +644,11 @@ paths:
                     pickup_date: '2023-06-20',
                     pickup_time: '08:00:00',
                     address_id: 1
+                  }
+                  machine_settings: {
+                    wash_type: 'heavy',
+                    water_temp: 'cold',
+                    spin_speed: 'low'
                   }
                   order_weight: 10
                   order_id: 20121232
@@ -664,6 +674,11 @@ paths:
                     pickup_time: '08:00:00',
                     address_id: 1
                   }
+                  machine_settings: {
+                    wash_type: 'heavy',
+                    water_temp: 'cold',
+                    spin_speed: 'low'
+                  }
                   order_weight: 10
                   order_id: 1
               Test Example 4:
@@ -688,6 +703,11 @@ paths:
                     pickup_time: '08:00:00',
                     address_id: 1
                   }
+                  machine_settings: {
+                    wash_type: 'heavy',
+                    water_temp: 'cold',
+                    spin_speed: 'low'
+                  }
                   order_weight: 10
                   order_id: 1
               Test Example 5:
@@ -706,6 +726,11 @@ paths:
                     pickup_date: '2023-06-20',
                     pickup_time: '08:00:00',
                     address_id: 1
+                  }
+                  machine_settings: {
+                    wash_type: 'heavy',
+                    water_temp: 'cold',
+                    spin_speed: 'low'
                   }
                   order_weight: 10
                   order_id: 1
@@ -730,6 +755,11 @@ paths:
                     pickup_date: '2023-06-20',
                     pickup_time: '08:00:00',
                     address_id: 1
+                  }
+                  machine_settings: {
+                    wash_type: 'heavy',
+                    water_temp: 'cold',
+                    spin_speed: 'low'
                   }
                   order_weight: 10
                   order_id: 1
@@ -851,6 +881,7 @@ paths:
                         "order_id": 1,
                         "laundry_items": [{price: 5.0, quantity: 1, product_id: 1, laundry_type: wash}, {price: 15.0, quantity: 21, product_id: 2, laundry_type: wash}],
                         "pickup_details": {pickup_date: "2023-06-20", pickup_time: "08:00:00", address: "311 woolwich street, waterloo, ontario, canada, N2K 0H4"},
+                        "machine_settings": {wash_type: "normal", water_temp: "cold", spin_speed: "low"},
                         "order_weight": 12.2,
                         "payment_status": "pending"
                       }
@@ -1408,6 +1439,9 @@ components:
         pickup_details:
           $ref: '#/components/schemas/order_pickup_details'
           example: {"pickup_date": "2023-06-20", "pickup_time": "07:00:00", "address_id": 1}
+        machine_settings:
+          $ref: '#/components/schemas/order_machine_settings'
+          example: { "wash_type": "normal", "water_temp": "cold", "spin_speed": "low" }
         order_weight:
           type: number
           nullable: true
@@ -1423,6 +1457,7 @@ components:
         - total_price
         - laundry_items
         - pickup_details
+        - machine_settings
         - order_weight
     order_laundry_items:
       type: object
@@ -1458,6 +1493,23 @@ components:
         - pickup_date
         - pickup_time
         - address_id
+    order_machine_settings:
+      type: object
+      properties:
+        wash_type:
+          type: string
+          example: 'normal'
+        water_temp:
+          type: string
+          example: 'cold'
+        spin_speed:
+          type: string
+          example: 'low'
+      required:
+        - wash_type
+        - water_temp
+        - spin_speed
+        
 
       # Calling API
     set_customer_order:
@@ -1746,6 +1798,15 @@ components:
             pickup_date:
               type: string
             pickup_time:
+              type: string
+        machine_settings:
+          type: object
+          properties:
+            wash_type:
+              type: string
+            water_temp:
+              type: string
+            spin_speed:
               type: string
         total_price:
           type: number

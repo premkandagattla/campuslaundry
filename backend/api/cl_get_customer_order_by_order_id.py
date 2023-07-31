@@ -50,6 +50,7 @@ class CLGetCustomerOrderByOrderId(BaseService):
             for result in results:
                 result['laundry_items'] = json.loads(result['laundry_items'])
                 result['pickup_details'] = json.loads(result['pickup_details'])
+                result['machine_settings'] = json.loads(result['machine_settings'])
             self.get_response_body.results = results
             return_val, status_code = self.get_success_response(results)
 

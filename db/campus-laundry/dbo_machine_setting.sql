@@ -16,29 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `customer_details`
+-- Table structure for table `machine_setting`
 --
 
-DROP TABLE IF EXISTS `customer_details`;
+DROP TABLE IF EXISTS `machine_setting`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `customer_details` (
-  `customer_id` int NOT NULL,
-  `date_of_birth` date DEFAULT NULL,
-  `gender` char(1) DEFAULT NULL,
-  PRIMARY KEY (`customer_id`),
-  CONSTRAINT `customer_details_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `machine_setting` (
+  `machine_setting_id` int NOT NULL AUTO_INCREMENT,
+  `order_id` int NOT NULL,
+  `wash_type` varchar(50) DEFAULT NULL,
+  `water_temp` varchar(50) DEFAULT NULL,
+  `spin_speed` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`machine_setting_id`),
+  KEY `order_id` (`order_id`),
+  CONSTRAINT `machine_setting_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `customer_details`
+-- Dumping data for table `machine_setting`
 --
 
-LOCK TABLES `customer_details` WRITE;
-/*!40000 ALTER TABLE `customer_details` DISABLE KEYS */;
-INSERT INTO `customer_details` VALUES (1,'1996-09-15','M');
-/*!40000 ALTER TABLE `customer_details` ENABLE KEYS */;
+LOCK TABLES `machine_setting` WRITE;
+/*!40000 ALTER TABLE `machine_setting` DISABLE KEYS */;
+INSERT INTO `machine_setting` VALUES (1,1,'heavy','cold','low');
+/*!40000 ALTER TABLE `machine_setting` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

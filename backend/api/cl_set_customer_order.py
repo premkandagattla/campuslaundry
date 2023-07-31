@@ -11,6 +11,7 @@ input_params['items_count'] = 3002
 input_params['total_price'] = 3004
 input_params['laundry_items'] = 3005
 input_params['pickup_details'] = 3006
+input_params['machine_settings'] = 3007
 input_params['order_weight'] = 3007
 input_params['subscribed_id'] = 5001
 input_params['order_id'] = 3001
@@ -59,6 +60,8 @@ class CLSetCustomerOrder(BaseService):
                     if key == 'laundry_items' and self.check_duplicates(input_dict[key]):
                         params_list.append(json.dumps(input_dict[key]))
                     elif key == 'pickup_details':
+                        params_list.append(json.dumps(input_dict[key]))
+                    elif key == 'machine_settings':
                         params_list.append(json.dumps(input_dict[key]))
                     else:
                         params_list.append(input_dict[key])
