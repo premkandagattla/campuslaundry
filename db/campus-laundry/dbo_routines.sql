@@ -161,7 +161,8 @@ CREATE DEFINER=`root`@`%` PROCEDURE `usp_get_customer_order_by_order_id`(
 sp: BEGIN
 
     SELECT o.order_id, o.customer_id, 
-            o.items_count, o.order_date, o.order_weight, 
+            o.items_count, o.order_date, o.order_weight,
+            (select os.order_status from order_status os where o.order_id=os.order_id) as order_status, 
             p.total_price, p.payment_status,
             p.payment_date,
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
