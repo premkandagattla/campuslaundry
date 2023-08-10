@@ -7,6 +7,11 @@
     <link rel="icon" type="image/png" href="/logo-sm.png" />
     <link rel="stylesheet" href="css/style.css">
     <title>Campus Laundry</title>
+    <style>
+      input[type='radio'] {
+        display: none;
+      } 
+    </style>
   </head>
   <body>
     <header>
@@ -187,8 +192,25 @@
     .then(data => {
       const queryStatus = data.results[0].query_status;
       if (queryStatus) {
-        alert('Login successful!');
-        // Perform further actions upon successful login
+        ​const apiUrlGCD = 'http://127.0.0.1:5000/campus-laundry/cl_get_customer_details';
+        fetch(apiUrlGCD, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+          const queryStatus = data.results[0].query_status;
+      if (queryStatus) {
+        sessionStorage.setItem("username", data.results[0]);
+        localStorage.setItem("username", data.results[0]);
+        window.location.href = "/user_home.html";
+      }
+        }).catch(error => {
+      console.error('Login error:', error);
+      alert('An error occurred during login. Please try again.');
+    });
+        
       } else {
         const message = data.results[0].message;
         if (message === 'Email not found') {

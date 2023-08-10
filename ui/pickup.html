@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/style.css">
   <title>Campus Laundry</title>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
   <header>
@@ -90,11 +91,8 @@
                 </div>
                   <br><br>
                   <h5 class="card-text">Pickup and Delivery</h5>
-                  <select class="form-select" aria-label="Default select example">
+                  <select class="form-select" id="addressSelect" aria-label="Default select example">
                     <option selected>Select Address</option>
-                    <option value="1">339, King St N, Waterloo</option>
-                    <option value="2">108 University Ave E, Waterloo</option>
-                    <option value="3">12 Bridgeport rd E, Waterloo</option>
                   </select>
                 </div>
                 <br>
@@ -110,56 +108,74 @@
       </div>
       
   </div>  
-
-
   <script>
-   
     document.addEventListener("DOMContentLoaded", function() {
-      // Function to format the date as 'MMMM D' (e.g., 'July 15')
       function formatDate(date) {
         return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
       }
 
-      // Function to check if all required fields are selected
       function checkOrderValidity() {
         const dateSelected = document.querySelector('input[name="btnradio1"]:checked');
         const timeSelected = document.querySelector('input[name="btnradio2"]:checked');
-        const addressSelected = document.querySelector('.form-select').value;
+        const addressSelected = document.querySelector('#addressSelect').value;
 
         const placeOrderButton = document.querySelector(".btn-primary");
         placeOrderButton.disabled = !(dateSelected && timeSelected && addressSelected !== "Select Address");
       }
 
-      // Get today's date
       const today = new Date();
 
-      // Set the date for the Today button
       const todayBtnLabel = document.querySelector('[for="todayBtn"]');
       todayBtnLabel.textContent = formatDate(today);
 
-      // Calculate tomorrow's date
       const tomorrow = new Date(today);
       tomorrow.setDate(today.getDate() + 1);
 
-      // Set the date for the Tomorrow button
       const tomorrowBtnLabel = document.querySelector('[for="tomorrowBtn"]');
       tomorrowBtnLabel.textContent = formatDate(tomorrow);
 
-      // Calculate the day after tomorrow's date
       const dayAfterTomorrow = new Date(today);
       dayAfterTomorrow.setDate(today.getDate() + 2);
 
-      // Set the date for the Day After Tomorrow button
       const dayAfterTomorrowBtnLabel = document.querySelector('[for="dayAfterTomorrowBtn"]');
       dayAfterTomorrowBtnLabel.textContent = formatDate(dayAfterTomorrow);
 
-      // Event listeners to monitor changes in the form elements
-      const formElements = document.querySelectorAll('input[name="btnradio1"], input[name="btnradio2"], .form-select');
+      const formElements = document.querySelectorAll('input[name="btnradio1"], input[name="btnradio2"], #addressSelect');
       formElements.forEach(element => {
         element.addEventListener("change", checkOrderValidity);
       });
     });
   </script>
-  
+  <script>
+      $(document).ready(function() {
+        function fetchAddresses() {
+          const apiUrl = 'http://127.0.0.1:5000/campus-laundry/cl_get_customer_address';
+          const headers = {
+            'Content-Type': 'application/json'
+          };
+          const data = {
+            "customer_id": 2 // Replace with the actual user ID
+          };
+
+          fetch(apiUrl, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(data)
+          })
+          .then(response => response.json())
+          .then(data => {
+            const addressSelect = $('#addressSelect');
+            data.results.forEach(address => {
+              const addressStr = address.street + ', ' + address.city + ', ' + address.province + ', ' + address.postal_code + ', ' + address.country;
+              const addressOption = $('<option>').val(addressStr).text(addressStr);
+              addressSelect.append(addressOption);
+            });
+          })
+          .catch(error => console.error('Error:', error));
+        }
+
+        fetchAddresses();
+      });
+    </script>
 </body>
 </html>
