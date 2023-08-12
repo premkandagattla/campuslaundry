@@ -59,12 +59,56 @@ CREATE DEFINER=`root`@`%` PROCEDURE `usp_get_customer_details`(
 )
 BEGIN
     SELECT c.customer_id AS customer_id, first_name, 
-    last_name, c.email AS email, date_of_birth, gender
+    last_name, c.email AS email, date_of_birth, gender,
+    cpn.phone_number As phone_number
     FROM customer c
     LEFT JOIN customer_details cd ON c.customer_id = cd.customer_id
+    LEFT JOIN customer_phone_number cpn on c.customer_id = cpn.customer_id and cpn.is_default = 1
     WHERE c.email = p_email;
 END ;;
 DELIMITER ;
+
+
+DELIMITER ;;
+
+CREATE DEFINER=`root`@`%` PROCEDURE `usp_set_customer_details`(
+	IN p_cid int,
+    IN p_email VARCHAR(100),
+    IN p_gender varchar(100),
+    IN p_dob date,
+    IN p_phone_number VARCHAR(20)
+)
+sp: BEGIN
+    -- Check if customer doesnot exists
+    IF NOT EXISTS (SELECT 1 FROM customer WHERE email = p_email AND customer_id = p_cid) THEN
+        SELECT 'false' AS query_status, 'Customer data does not exists' AS message;
+        LEAVE sp;
+    END IF;
+
+    Update customer_details
+    set date_of_birth = p_dob,
+		gender = p_gender
+    where customer_id = p_cid;
+    
+    Update customer_phone_number
+	set is_default = 0, 
+		is_active = 0
+	where customer_id = p_cid;
+        
+    IF EXISTS (select 1 from customer_phone_number where phone_number = p_phone_number and customer_id = p_cid)
+    THEN
+        update customer_phone_number
+        set is_active = 1, is_default = 1
+        where customer_id = p_cid and phone_number = p_phone_number;
+	ELSE
+		INSERT INTO customer_phone_number (customer_id, phone_number, is_active, is_default)
+        VALUES (p_cid, p_phone_number, 1, 1);
+    END IF;
+    
+    SELECT 'true' AS query_status, 'Customer details updated successfully' AS message;
+END ;;
+DELIMITER ;
+
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;

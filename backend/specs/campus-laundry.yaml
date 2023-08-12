@@ -144,6 +144,8 @@ paths:
           description: unexpected error
           
           
+          
+  
   # Laundry Items Section
   
   /cl_get_laundry_items:
@@ -215,6 +217,26 @@ paths:
           
   
   # Customer Profile Section
+  
+  /cl_set_customer_details:
+    post:
+      summary: Set Customer Details
+      tags:
+        - Customer Profile
+      description: |
+        ## Set Customer Details
+        ---
+      operationId: api.cl_set_customer_details.post
+      requestBody:
+        required: true
+        $ref: '#/components/requestBodies/set_customer_details'
+      responses:
+        200:
+          $ref: '#/components/responses/set_customer_details'
+        400:
+          $ref: '#/components/responses/400'
+        500:
+          $ref: '#/components/responses/500'
   
   /cl_get_customer_details:
     post:
@@ -585,6 +607,7 @@ paths:
           
           
           
+  
   # Customer Order Details Section
   # Create Customer Order
   /cl_set_customer_order:
@@ -1046,6 +1069,8 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
+  
+  
   
 components:
   # Schemas
@@ -1850,6 +1875,58 @@ components:
         total_price:
           type: number
        
+       
+    
+    # Customer Set Details
+    set_customer_details:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/result_headers'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/set_customer_details_results'
+    set_customer_details_input:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+          default: 1
+        email:
+          type: string
+          format: email
+          minLength: 1
+          pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
+          default: "test@test.com"
+        gender:
+          type: string
+          minLength: 1
+          maxLength: 1
+          pattern: ^(M|F|O)$
+          default: "M"
+        date_of_birth:
+          type: string
+          format: date
+          default: "1996-09-15"
+        phone_number:
+          type: string
+          minLength: 10
+          maxLength: 10
+      required:
+        - customer_id
+        - email
+        - gender
+        - date_of_birth
+        - phone_number
+        
+    set_customer_details_results:
+      type: object
+      properties:
+        query_status:
+          type: boolean
+        message:
+          type: string
   
   # Request Bodies
   requestBodies:
@@ -1920,7 +1997,6 @@ components:
             Test Example 2:
               $ref: '#/components/examples/set_order_status_input_2'
               
-    
     # Set Payment Status
     set_payment_status:
       content:
@@ -1932,7 +2008,17 @@ components:
               $ref: '#/components/examples/set_payment_status_input_1'
             Test Example 2:
               $ref: '#/components/examples/set_payment_status_input_2'
-    
+    # Set Customer Details
+    set_customer_details:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/set_customer_details_input'
+          examples:
+            Test Example 1:
+              $ref: '#/components/examples/set_customer_details_input_1'
+            Test Example 2:
+              $ref: '#/components/examples/set_customer_details_input_2'
   
   # Responses
   responses:
@@ -2048,6 +2134,17 @@ components:
               $ref: '#/components/examples/set_payment_status_output_1'
             Test Example 2:
               $ref: '#/components/examples/set_payment_status_output_2'
+    set_customer_details:
+      description: Set Customer Details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/set_customer_details'
+          examples:
+            Test Example 1:
+              $ref: '#/components/examples/set_customer_details_output_1'
+            Test Example 2:
+              $ref: '#/components/examples/set_customer_details_output_2'
   
   # Examples
   examples:
@@ -2419,6 +2516,52 @@ components:
             "message": "order id and customer id mismatch",
             "order_id": 1
           } ]
+        
+    # Set Customer Details
+    set_customer_details_input_1:
+      summary: Set Customer Details - Success
+      value:
+        customer_id: 1
+        email: test@test.com
+        gender: M
+        date_of_birth: 1996-10-15
+        phone_number: "5483333638"
+    set_customer_details_input_2:
+      summary: Set Customer Details - Failed
+      value:
+        customer_id: 1123
+        email: test@test.com
+        gender: M
+        date_of_birth: "1996-10-15"
+        phone_number: "5483333638"
+    set_customer_details_output_1:
+      summary: Set Customer Details output - Success
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.74
+        results: [ {
+          "query_status": true,
+          "message": "Customer details updated successfully"
+        } ]
+    set_customer_details_output_2:
+      summary: Set Payment Status output - Failed
+      value:
+        header:
+          error_code: 0
+          error_message: ""
+          status: 200
+          rows_returned: 1
+          time_taken: 0.28
+        results:
+          [ {
+            "query_status": false,
+            "message": "Customer data does not exists"
+          } ]
+    
     
 
 
