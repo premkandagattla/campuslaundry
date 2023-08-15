@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script>
+      (function() {
+        const userEmail = sessionStorage.getItem('empEmail');
+        if (userEmail) {
+          window.location.href = '/agent_home.html';
+        }
+      })();
+    </script>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/logo-sm.png" />
     <link rel="stylesheet" href="css/style.css">
+    
     <title>Campus Laundry</title>
     <style>
       input[type='radio'] {
@@ -23,10 +32,10 @@
 
         <ul class="header__menu" data-aos="fade-down">
             <li>
-                <a href="/">Home</a>
+                <a href="/agent_home.html">Home</a>
               </li>
               <li>
-                <a href="">Orders</a>
+                <a href="/agent_orders.html">Orders</a>
               </li>
               <li>
                 <a href="/agent_login.html">Login</a>
@@ -47,6 +56,8 @@
         </div>
   
         <div class="hero-content-account">
+          <div class="alert-placeholder"></div>
+<br>
             <div class="wrapper">
                 <div class="title-text">
                    <div class="title login">
@@ -105,6 +116,7 @@
 
      <script>
     
+    
     function loginUser(event) {
   event.preventDefault();
 
@@ -113,11 +125,12 @@
 
   const data = {
     email: email,
-    password: password
+    password: password,
+    role: "delivery",
   };
 
   const proxyUrl = 'https://cors-anywhere.herokuapp.com/'; // Proxy server URL
-  const apiUrl = 'http://127.0.0.1:5000/campus-laundry/cl_get_customer_login';
+  const apiUrl = 'http://127.0.0.1:5000/campus-laundry/cl_get_employee_login';
   const headers = {
     'Content-Type': 'application/json'
   };
@@ -131,8 +144,13 @@
     .then(data => {
       const queryStatus = data.results[0].query_status;
       if (queryStatus) {
-        alert('Login successful!');
-        // Perform further actions upon successful login
+
+        // Store the customer id in session and local storage
+        sessionStorage.setItem('empEmail', email);
+        localStorage.setItem('empEmail', email);
+
+        // Redirect to user home
+        window.location.assign('/owner_home.html');
       } else {
         const message = data.results[0].message;
         if (message === 'Email not found') {
@@ -144,61 +162,38 @@
     })
     .catch(error => {
       console.error('Login error:', error);
-      alert('An error occurred during login. Please try again.');
+      displayBootstrapAlert('danger', 'An error occurred during login. Please try again.');
     });
 
   return false; // Prevent form submission
 }
 
+function displayBootstrapAlert(type, message) {
+    const alertPlaceholder = document.querySelector('.alert-placeholder');
+    
+    const alertDiv = document.createElement('div');
+    alertDiv.classList.add('alert', `alert-${type}`);
+    alertDiv.setAttribute('role', 'alert');
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    `;
 
-    function registerUser(event) {
-        const email = document.getElementById('emailInput').value;
-        const firstName = document.getElementById('firstNameInput').value;
-        const lastName = document.getElementById('lastNameInput').value;
-        const password = document.getElementById('passwordInput').value;
-        const confirmPassword = document.getElementById('confirmPasswordInput').value;
+    // Clear existing alerts
+    alertPlaceholder.innerHTML = '';
+    
+    // Append the new alert
+    alertPlaceholder.appendChild(alertDiv);
 
-        if (password !== confirmPassword) {
-          alert('Passwords do not match!');
-          return false;
-        }
-        
-        const phone = null;
-
-        const data = {
-          email: email,
-          first_name: firstName,
-          last_name: lastName,
-          password: password,
-          phone_number: phone,
-        };
-
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/'; // Proxy server URL
-        const url = 'http://127.0.0.1:5000/campus-laundry/cl_set_customer_registration';
-        const headers = {
-          'Content-Type': 'application/json'
-        };
-
-        fetch(url, {  // Prepend the proxy server URL to the API endpoint
-          method: 'POST',
-          headers: headers,
-          body: JSON.stringify(data)
-        })
-          .then(response => {
-            if (response.ok) {
-              alert('Registration successful!');
-              // Perform any further actions upon successful registration
-            } else {
-              alert('Registration failed. Please try again.');
-            }
-          })
-          .catch(error => {
-            console.error('Registration error:', error);
-            alert('An error occurred during registration. Please try again.');
-          });
-
-        return false; // Prevent form submission
+    // Auto-remove the alert after 5 seconds
+    setTimeout(() => {
+        $(alertDiv).alert('close');
+    }, 5000);
 }
+
+
 
      </script>
      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>

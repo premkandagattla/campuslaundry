@@ -1,73 +1,296 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Campus Laundry Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        (function () {
+            const userEmail = sessionStorage.getItem('userEmail');
+            if (!userEmail) {
+                window.location.href = '/account.html';
+            }
+        })();
+    </script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/logo-sm.png" />
+    <link rel="stylesheet" href="css/style.css">
+    <title>Campus Laundry</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+
 <body>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <div class="container">
-      <a class="navbar-brand" href="#">Campus Laundry</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Orders</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Logout</a>
-          </li>
-        </ul>
+  <header>
+    <nav class="header__nav">
+      <div class="header__logo">
+        <img src="assets/Logo.png" alt="logo" />
+        <div class="header__logo-overlay"></div>
       </div>
+
+      <ul class="header__menu" data-aos="fade-down">
+        <li>
+          <a href="/user_home.html">Home</a>
+        </li>
+        <li>
+          <a href="/profile.html">Profile</a>
+        </li>
+        <li>
+          <a href="/address.html">Address Book</a>
+        </li>
+        <li>
+          <a href="/account.html" id="logout" class="nav-link">Logout</a>
+        </li>
+      </ul>
+
+      <ul class="header__menu-mobile" data-aos="fade-down">
+        <li>
+          <img src="/assets/menu.svg" alt="menu" />
+        </li>
+      </ul>
+    </nav>
+  </header>
+  <br>
+  <br>
+  <div class="container-fluid">
+    <div class="div">
+        <img src="assets/Trees-Pattern.png" class="img-fluid" alt="img">
     </div>
-  </nav>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <h1>Overview</h1>
-        <p>Today's Revenue: $100</p>
-        <p>New Orders: 10</p>
+    <br>
+    <br>
+    <div class="container text-center">
+
+          <br><br>
+        <div class="row align-items-start">
+          <div class="col-5">
+            <div class="card" style="background-color: rgb(247, 247, 247);">
+            <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+            <lottie-player src="https://assets10.lottiefiles.com/private_files/lf30_woaw2kkp.json"  background="transparent"  speed="1"  style="width: 500px; height: 600px;"  loop  autoplay></lottie-player>
+          </div>
+          </div>
+          <div class="col-7">
+            <div class="card" style="background-color:  rgb(247, 247, 247);">
+                <div class="card-body">
+                  <h5 class="card-title">Schedule Pickup</h5> <br>
+                  <h5 class="card-text">Date</h5>
+                  <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                    <input type="radio" class="btn-check" name="btnradio1" id="todayBtn" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="todayBtn">Today</label>
+                                        
+                    <input type="radio" class="btn-check" name="btnradio1" id="tomorrowBtn" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="tomorrowBtn">Tomorrow</label>
+                                        
+                    <input type="radio" class="btn-check" name="btnradio1" id="dayAfterTomorrowBtn" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="dayAfterTomorrowBtn">Day After Tomorrow</label>
+                  </div>
+                </br> </br>
+                <h5 class="card-text">Time</h5>
+                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                  <input type="radio" class="btn-check" name="btnradio2" id="btnradio11" autocomplete="off" checked>
+                  <label class="btn btn-outline-primary" for="btnradio11">7-10 AM</label>
+                
+                  <input type="radio" class="btn-check" name="btnradio2" id="btnradio22" autocomplete="off">
+                  <label class="btn btn-outline-primary" for="btnradio22">12-04 PM</label>
+                
+                  <input type="radio" class="btn-check" name="btnradio2" id="btnradio33" autocomplete="off">
+                  <label class="btn btn-outline-primary" for="btnradio33">06-09 PM</label>
+                </div>
+                  <br><br>
+                  <h5 class="card-text">Pickup and Delivery</h5>
+                  <select class="form-select" id="addressSelect" aria-label="Default select example">
+                    <option selected>Select Address</option>
+                  </select>
+                </div>
+                <br>
+                <a href="orderstatus.html">
+                <button type="button" class="btn btn-primary" style="width: 80%;margin-left: 10%;" disabled >Place Order</button>
+              </a>
+                <br><br>
+              </div>
+          </div>
+        </div>
+          <br><br>
+          
       </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <h2>Today's Orders</h2>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Item Count</th>
-              <th>Address</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>12345</td>
-              <td>10</td>
-              <td>123 Main Street</td>
-            </tr>
-            <tr>
-              <td>67890</td>
-              <td>5</td>
-              <td>456 Elm Street</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col-md-6">
-        <h2>Total Revenue</h2>
-        <p>$4000</p>
-        <p>Agents: 5</p>
-      </div>
-    </div>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+      
+  </div> 
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            function formatDate(date) {
+                let day = date.getDate();
+                let month = date.getMonth() + 1;
+                let year = date.getFullYear();
+
+                if (day < 10) {
+                    day = '0' + day;
+                }
+
+                if (month < 10) {
+                    month = '0' + month;
+                }
+
+                return `${year}-${month}-${day}`;
+            }
+
+            function convertTimeFormat(inputTime) {
+                const [time, period] = inputTime.split(" ");
+                let [startHour, endHour] = time.split("-");
+                startHour = parseInt(startHour);
+                if (period === "PM" && startHour !== 12) {
+                    startHour += 12;
+                } else if (period === "AM" && startHour === 12) {
+                    startHour = 0;
+                }
+                return `${String(startHour).padStart(2, "0")}:00:00`;
+            }
+
+            function checkOrderValidity() {
+                const dateSelected = document.querySelector('input[name="btnradio1"]:checked');
+                const timeSelected = document.querySelector('input[name="btnradio2"]:checked');
+                const addressSelected = document.querySelector('#addressSelect').value;
+
+                const placeOrderButton = document.querySelector(".btn-primary");
+                placeOrderButton.disabled = !(dateSelected && timeSelected && addressSelected !== "Select Address");
+
+                if (!placeOrderButton.disabled) {
+                    sessionStorage.setItem('selectedDate', formatDate(new Date(document.querySelector(`label[for="${dateSelected.id}"]`).textContent.trim())));
+                    sessionStorage.setItem('selectedTime', convertTimeFormat(document.querySelector(`label[for="${timeSelected.id}"]`).textContent.trim()));
+                    sessionStorage.setItem('selectedAddress', addressSelected);
+                }
+            }
+
+            const today = new Date();
+            document.querySelector('[for="todayBtn"]').textContent = formatDate(today);
+
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+            document.querySelector('[for="tomorrowBtn"]').textContent = formatDate(tomorrow);
+
+            const dayAfterTomorrow = new Date(today);
+            dayAfterTomorrow.setDate(today.getDate() + 2);
+            document.querySelector('[for="dayAfterTomorrowBtn"]').textContent = formatDate(dayAfterTomorrow);
+
+            const dateButtons = document.querySelectorAll('input[name="btnradio1"]');
+            const timeButtons = document.querySelectorAll('input[name="btnradio2"]');
+            const addressSelect = document.querySelector('#addressSelect');
+
+            dateButtons.forEach(btn => {
+                btn.addEventListener('change', checkOrderValidity);
+            });
+
+            timeButtons.forEach(btn => {
+                btn.addEventListener('change', checkOrderValidity);
+            });
+
+            addressSelect.addEventListener('change', checkOrderValidity);
+
+            const customerId = parseInt(sessionStorage.getItem('customerId'), 10);
+
+            function fetchAddresses() {
+                const apiUrl = 'http://127.0.0.1:5000/campus-laundry/cl_get_customer_address';
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                const data = {
+                    "customer_id": customerId
+                };
+
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const addressSelect = $('#addressSelect');
+                    data.results.forEach(address => {
+                        const addressStr = address.street + ', ' + address.city + ', ' + address.province + ', ' + address.postal_code + ', ' + address.country;
+                        const addressOption = $('<option>').val(address.address_id).text(addressStr);
+                        addressSelect.append(addressOption);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+            }
+
+            fetchAddresses();
+
+            document.querySelector('.btn-primary').addEventListener('click', (e) => {
+                e.preventDefault();
+
+                const apiUrl = 'http://127.0.0.1:5000/campus-laundry/cl_set_customer_order';
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+
+                const selectedAddress = sessionStorage.getItem('selectedAddress');
+        const selectedDate = sessionStorage.getItem('selectedDate');
+        const selectedTime = sessionStorage.getItem('selectedTime');
+        const washType = sessionStorage.getItem('washType');
+        const waterTemperature = sessionStorage.getItem('waterTemperature');
+        const spinSpeed = sessionStorage.getItem('spinSpeed');
+        const itemCounts = JSON.parse(sessionStorage.getItem('itemCounts'));
+
+        const products = [
+            { name: 'Shirt', load: 10, price: 2, product_id: 1 },
+            { name: 'T-Shirt', load: 10, price: 2, product_id: 2 },
+            { name: 'Pant', load: 10, price: 2, product_id: 3 },
+            { name: 'Shorts', load: 6, price: 1.5, product_id: 4 },
+            { name: 'Dress', load: 14, price: 3, product_id: 5 },
+            { name: 'Skirt', load: 14, price: 3, product_id: 6 },
+            { name: 'Jeans', load: 14, price: 3, product_id: 7 },
+            { name: 'Jacket', load: 20, price: 5, product_id: 8 },
+            { name: 'Socks', load: 4, price: 0.7, product_id: 9 }
+        ];
+
+        let totalOrderWeight = 0;
+        let totalPrice = 0;
+
+        const laundryItems = itemCounts.map((count, index) => {
+            totalOrderWeight += products[index].load * count;
+            totalPrice += products[index].price * count;
+
+            return {
+                laundry_type: "wash",
+                product_id: index + 1,
+                quantity: count,
+                price: products[index].price
+            };
+        });
+
+
+                const data = {
+                  'customer_id': customerId,
+            'items_count': itemCounts.length,
+            'laundry_items': laundryItems,
+            'machine_settings': {
+                'wash_type': washType,
+                'water_temp': waterTemperature,
+                'spin_speed': spinSpeed
+            },
+            'order_weight': totalOrderWeight,
+            'total_price': totalPrice,
+                    'pickup_details': {
+                        'address_id': parseInt(selectedAddress, 10),
+                        'pickup_date': selectedDate,
+                        'pickup_time': selectedTime
+                    }
+                };
+
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    window.location.href = 'orderstatus.html';
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
 </body>
+
 </html>

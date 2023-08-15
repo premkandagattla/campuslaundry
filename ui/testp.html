@@ -7,11 +7,6 @@
     <link rel="icon" type="image/png" href="/logo-sm.png" />
     <link rel="stylesheet" href="css/style.css">
     <title>Campus Laundry</title>
-    <style>
-      input[type='radio'] {
-        display: none;
-      } 
-    </style>
   </head>
   <body>
     <header>
@@ -247,8 +242,17 @@
         })
           .then(response => {
             if (response.ok) {
+              // Storing the session
+          sessionStorage.setItem('userEmail', email);
+          sessionStorage.setItem('firstName', firstName);
+          sessionStorage.setItem('lastName', lastName);
+
+          console.log(sessionStorage.getItem('userEmail', email));
+
               alert('Registration successful!');
               // Perform any further actions upon successful registration
+
+
             } else {
               alert('Registration failed. Please try again.');
             }

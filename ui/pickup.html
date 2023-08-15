@@ -1,16 +1,26 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">    
-  <link rel="icon" type="image/png" href="/logo-sm.png" />
-  <link rel="stylesheet" href="css/style.css">
-  <title>Campus Laundry</title>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        (function () {
+            const userEmail = sessionStorage.getItem('userEmail');
+            if (!userEmail) {
+                window.location.href = '/account.html';
+            }
+        })();
+    </script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/logo-sm.png" />
+    <link rel="stylesheet" href="css/style.css">
+    <title>Campus Laundry</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+
 <body>
   <header>
     <nav class="header__nav">
@@ -21,19 +31,19 @@
 
       <ul class="header__menu" data-aos="fade-down">
         <li>
-          <a href="/">Home</a>
+          <a href="/user_home.html">Home</a>
         </li>
         <li>
-          <a href="/#menu">Membership</a>
+          <a href="/profile.html">Profile</a>
         </li>
         <li>
-          <a href="/#food">WHY US</a>
+            <a href="/my_orders.html">Orders</a>
+          </li>
+        <li>
+          <a href="/address.html">Address Book</a>
         </li>
         <li>
-          <a href="/#services">CONTACT US</a>
-        </li>
-        <li>
-          <a href="">Login</a>
+          <a href="/account.html" id="logout" class="nav-link">Logout</a>
         </li>
       </ul>
 
@@ -96,7 +106,7 @@
                   </select>
                 </div>
                 <br>
-                <a href="orderstatus.html">
+                <a href="http://localhost:4242/checkout.html">
                 <button type="button" class="btn btn-primary" style="width: 80%;margin-left: 10%;" disabled >Place Order</button>
               </a>
                 <br><br>
@@ -107,75 +117,267 @@
           
       </div>
       
-  </div>  
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      function formatDate(date) {
-        return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
-      }
+  </div> 
 
-      function checkOrderValidity() {
-        const dateSelected = document.querySelector('input[name="btnradio1"]:checked');
-        const timeSelected = document.querySelector('input[name="btnradio2"]:checked');
-        const addressSelected = document.querySelector('#addressSelect').value;
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            function formatDate(date) {
+                let day = date.getDate();
+                let month = date.getMonth() + 1;
+                let year = date.getFullYear();
 
-        const placeOrderButton = document.querySelector(".btn-primary");
-        placeOrderButton.disabled = !(dateSelected && timeSelected && addressSelected !== "Select Address");
-      }
+                if (day < 10) {
+                    day = '0' + day;
+                }
 
-      const today = new Date();
+                if (month < 10) {
+                    month = '0' + month;
+                }
 
-      const todayBtnLabel = document.querySelector('[for="todayBtn"]');
-      todayBtnLabel.textContent = formatDate(today);
+                return `${year}-${month}-${day}`;
+            }
 
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
+            function convertTimeFormat(inputTime) {
+                const [time, period] = inputTime.split(" ");
+                let [startHour, endHour] = time.split("-");
+                startHour = parseInt(startHour);
+                if (period === "PM" && startHour !== 12) {
+                    startHour += 12;
+                } else if (period === "AM" && startHour === 12) {
+                    startHour = 0;
+                }
+                return `${String(startHour).padStart(2, "0")}:00:00`;
+            }
 
-      const tomorrowBtnLabel = document.querySelector('[for="tomorrowBtn"]');
-      tomorrowBtnLabel.textContent = formatDate(tomorrow);
+            function checkOrderValidity() {
+                const dateSelected = document.querySelector('input[name="btnradio1"]:checked');
+                const timeSelected = document.querySelector('input[name="btnradio2"]:checked');
+                const addressSelected = document.querySelector('#addressSelect').value;
 
-      const dayAfterTomorrow = new Date(today);
-      dayAfterTomorrow.setDate(today.getDate() + 2);
+                const placeOrderButton = document.querySelector(".btn-primary");
+                placeOrderButton.disabled = !(dateSelected && timeSelected && addressSelected !== "Select Address");
 
-      const dayAfterTomorrowBtnLabel = document.querySelector('[for="dayAfterTomorrowBtn"]');
-      dayAfterTomorrowBtnLabel.textContent = formatDate(dayAfterTomorrow);
+                if (!placeOrderButton.disabled) {
+                    sessionStorage.setItem('selectedDate', formatDate(new Date(document.querySelector(`label[for="${dateSelected.id}"]`).textContent.trim())));
+                    sessionStorage.setItem('selectedTime', convertTimeFormat(document.querySelector(`label[for="${timeSelected.id}"]`).textContent.trim()));
+                    sessionStorage.setItem('selectedAddress', addressSelected);
+                }
+            }
 
-      const formElements = document.querySelectorAll('input[name="btnradio1"], input[name="btnradio2"], #addressSelect');
-      formElements.forEach(element => {
-        element.addEventListener("change", checkOrderValidity);
-      });
-    });
-  </script>
-  <script>
-      $(document).ready(function() {
-        function fetchAddresses() {
-          const apiUrl = 'http://127.0.0.1:5000/campus-laundry/cl_get_customer_address';
-          const headers = {
-            'Content-Type': 'application/json'
-          };
-          const data = {
-            "customer_id": 2 // Replace with the actual user ID
-          };
+            const today = new Date();
+            document.querySelector('[for="todayBtn"]').textContent = formatDate(today);
 
-          fetch(apiUrl, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(data)
-          })
-          .then(response => response.json())
-          .then(data => {
-            const addressSelect = $('#addressSelect');
-            data.results.forEach(address => {
-              const addressStr = address.street + ', ' + address.city + ', ' + address.province + ', ' + address.postal_code + ', ' + address.country;
-              const addressOption = $('<option>').val(addressStr).text(addressStr);
-              addressSelect.append(addressOption);
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+            document.querySelector('[for="tomorrowBtn"]').textContent = formatDate(tomorrow);
+
+            const dayAfterTomorrow = new Date(today);
+            dayAfterTomorrow.setDate(today.getDate() + 2);
+            document.querySelector('[for="dayAfterTomorrowBtn"]').textContent = formatDate(dayAfterTomorrow);
+
+            const dateButtons = document.querySelectorAll('input[name="btnradio1"]');
+            const timeButtons = document.querySelectorAll('input[name="btnradio2"]');
+            const addressSelect = document.querySelector('#addressSelect');
+
+            dateButtons.forEach(btn => {
+                btn.addEventListener('change', checkOrderValidity);
             });
-          })
-          .catch(error => console.error('Error:', error));
-        }
 
-        fetchAddresses();
-      });
+            timeButtons.forEach(btn => {
+                btn.addEventListener('change', checkOrderValidity);
+            });
+
+            addressSelect.addEventListener('change', checkOrderValidity);
+
+            const customerId = parseInt(sessionStorage.getItem('customerId'), 10);
+
+            function fetchAddresses() {
+                const apiUrl = 'http://127.0.0.1:5000/campus-laundry/cl_get_customer_address';
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                const data = {
+                    "customer_id": customerId
+                };
+
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const addressSelect = $('#addressSelect');
+                    data.results.forEach(address => {
+                        const addressStr = address.street + ', ' + address.city + ', ' + address.province + ', ' + address.postal_code + ', ' + address.country;
+                        const addressOption = $('<option>').val(address.address_id).text(addressStr);
+                        addressSelect.append(addressOption);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+            }
+
+            fetchAddresses();
+
+            document.querySelector('.btn-primary').addEventListener('click', (e) => {
+                e.preventDefault();
+
+                const apiUrl = 'http://127.0.0.1:5000/campus-laundry/cl_set_customer_order';
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+
+                const selectedAddress = sessionStorage.getItem('selectedAddress');
+        const selectedDate = sessionStorage.getItem('selectedDate');
+        const selectedTime = sessionStorage.getItem('selectedTime');
+        const washType = sessionStorage.getItem('washType');
+        const waterTemperature = sessionStorage.getItem('waterTemperature');
+        const spinSpeed = sessionStorage.getItem('spinSpeed');
+        const itemCounts = JSON.parse(sessionStorage.getItem('itemCounts'));
+
+        const products = [
+            { name: 'Shirt', load: 10, price: 2, product_id: 1 },
+            { name: 'T-Shirt', load: 10, price: 2, product_id: 2 },
+            { name: 'Pant', load: 10, price: 2, product_id: 3 },
+            { name: 'Shorts', load: 6, price: 1.5, product_id: 4 },
+            { name: 'Dress', load: 14, price: 3, product_id: 5 },
+            { name: 'Skirt', load: 14, price: 3, product_id: 6 },
+            { name: 'Jeans', load: 14, price: 3, product_id: 7 },
+            { name: 'Jacket', load: 20, price: 5, product_id: 8 },
+            { name: 'Socks', load: 4, price: 0.7, product_id: 9 }
+        ];
+
+        let totalOrderWeight = 0;
+        let totalPrice = 0;
+        let lastOrder = 0;
+
+            function fetchLastOrder() {
+              console.log("fetchLastOrder function called");
+
+                  const apiUrl = 'http://127.0.0.1:5000/campus-laundry/cl_get_customer_orders_history';
+                  const headers = {
+                      'Content-Type': 'application/json'
+                  };
+                  const data = {
+                      "customer_id": customerId
+                  };
+
+                  fetch(apiUrl, {
+                      method: 'POST',
+                      headers: headers,
+                      body: JSON.stringify(data)
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                      if(data.results && data.results.length > 0) {
+                          // Storing the order_id of the last order in the session storage
+                          lastOrder = parseInt(data.results[data.results.length - 1].order_id);
+                          lastOrder+=1;
+                          sessionStorage.setItem('order_id', lastOrder);
+                          console.log("LO", lastOrder);
+
+                      }
+                  })
+                  .catch(error => console.error('Error:', error));
+              }
+
+
+        const laundryItems = itemCounts.map((count, index) => {
+            totalOrderWeight += products[index].load * count;
+            totalPrice += products[index].price * count;
+
+            return {
+                laundry_type: "wash",
+                product_id: index + 1,
+                quantity: count,
+                price: products[index].price
+            };
+        });
+        sessionStorage.setItem('totalPrice', totalPrice);
+
+                const data = {
+                  'customer_id': customerId,
+            'items_count': itemCounts.length,
+            'laundry_items': laundryItems,
+            'machine_settings': {
+                'wash_type': washType,
+                'water_temp': waterTemperature,
+                'spin_speed': spinSpeed
+            },
+            'order_weight': totalOrderWeight,
+            'total_price': totalPrice,
+                    'pickup_details': {
+                        'address_id': parseInt(selectedAddress, 10),
+                        'pickup_date': selectedDate,
+                        'pickup_time': selectedTime
+                    }
+                };
+
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                  sessionStorage.removeItem('selectedDate');
+                  sessionStorage.removeItem('selectedTime');
+                  sessionStorage.removeItem('selectedAddress');
+                  sessionStorage.removeItem('washType');
+                  sessionStorage.removeItem('waterTemperature');
+                  sessionStorage.removeItem('spinSpeed');
+                  sessionStorage.removeItem('itemCounts');
+
+                  fetchLastOrder();
+
+
+                 
+                   fetch('http://localhost:4242/process-order', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            totalPrice: totalPrice,
+                            orderId: sessionStorage.getItem('order_id'),
+                            customerId: customerId,
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.sessionUrl) {
+                            window.location.href = data.sessionUrl;
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
     </script>
+        <script type="module">
+          let logoutElement = document.getElementById('logout');
+  
+          if (logoutElement) {
+              logoutElement.addEventListener('click', function(e) {
+                  e.preventDefault();
+  
+                  // Clear local storage
+                  localStorage.removeItem('userEmail');
+                  localStorage.removeItem('customerId');
+  
+                  // Clear session storage
+                  sessionStorage.removeItem('userEmail');
+                  sessionStorage.removeItem('customerId');
+
+
+  
+                  // Redirect to /account.html
+                  window.location.href = '/account.html';
+              });
+          }
+      </script>
 </body>
+
 </html>

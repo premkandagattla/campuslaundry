@@ -1,6 +1,14 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script>
+      (function() {
+        const userEmail = sessionStorage.getItem('userEmail');
+        if (!userEmail) {
+          window.location.href = '/account.html';
+        }
+      })();
+    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -20,19 +28,19 @@
   
           <ul class="header__menu" data-aos="fade-down">
             <li>
-              <a href="/">Home</a>
+              <a href="/user_home.html">Home</a>
             </li>
             <li>
-              <a href="/#menu">Membership</a>
+              <a href="/profile.html">Profile</a>
             </li>
             <li>
-              <a href="/#food">WHY US</a>
+              <a href="/my_orders.html">Orders</a>
             </li>
             <li>
-              <a href="/#services">CONTACT US</a>
+              <a href="/address.html">Address Book</a>
             </li>
             <li>
-              <a href="">Login</a>
+              <a href="/account.html" id="logout" class="nav-link">Logout</a>
             </li>
           </ul>
   
@@ -50,6 +58,10 @@
             <img src="assets/Trees-Pattern.png" class="img-fluid" alt="img">
         </div>
         <br>
+        <div id="alert-box" class="alert alert-warning alert-dismissible fade show" role="alert" style="display: none">
+          <strong id="alert-text"></strong>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="document.getElementById('alert-box').style.display = 'none'"></button>
+      </div>
         <br>
         <div class="container">
             <div class="row justify-content-center mt-5">
@@ -71,9 +83,9 @@
                       <div class="mb-3">
                         <label for="gender" class="form-label">Gender</label>
                         <select class="form-control" id="gender">
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
-                          <option value="other">Other</option>
+                          <option value="m">Male</option>
+                          <option value="f">Female</option>
+                          <option value="o">Other</option>
                         </select>
                       </div>
                       <div class="mb-3">
@@ -96,7 +108,117 @@
           
       </div>
 
+      <script type="module">
+      
+      document.addEventListener('DOMContentLoaded', function() {
+    function showAlert(message) {
+        let alertBox = document.getElementById('alert-box');
+        let alertText = document.getElementById('alert-text');
 
+        alertText.innerHTML = message;
+        alertBox.style.display = 'block';
+    }
+
+    const apiUrlGet = 'http://127.0.0.1:5000/campus-laundry/cl_get_customer_details';
+    const apiUrlSet = 'http://127.0.0.1:5000/campus-laundry/cl_set_customer_details';
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+
+    const userEmail = sessionStorage.getItem('userEmail');
+    const data = {
+        email: userEmail
+    };
+
+    fetch(apiUrlGet, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        let user = data.results[0];
+        sessionStorage.setItem('customerId', user.customer_id);
+        document.getElementById('name').value = `${user.first_name || ''} ${user.last_name || ''}`;
+        document.getElementById('email').value = user.email || '';
+        document.getElementById('gender').value = (user.gender || '').toLowerCase();
+        document.getElementById('dob').value = user.date_of_birth || '';
+        document.getElementById('phone').value = user.phone_number || '';
+    })
+    .catch(error => {
+        console.error('Error fetching user details:', error);
+    });
+
+    const formElement = document.querySelector('form');
+
+    formElement.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const customerId = sessionStorage.getItem('customerId');
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const gender = document.getElementById('gender').value.toUpperCase();
+        const rawDOB = document.getElementById('dob').value; 
+        const dobDate = new Date(rawDOB);
+        const formattedDOB = `${dobDate.getFullYear()}-${String(dobDate.getMonth() + 1).padStart(2, '0')}-${String(dobDate.getDate()).padStart(2, '0')}`; // format as YYYY-MM-DD
+        const phone = document.getElementById('phone').value;
+
+        const saveData = {
+            customer_id: parseInt(customerId),
+            date_of_birth: formattedDOB || null, // set to null if empty
+            email: email,
+            gender: gender || null, // set to null if empty
+            phone_number: String(phone) // ensure phone number is a string
+        };
+
+
+        console.log('Saving data:', saveData);
+
+        fetch(apiUrlSet, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(saveData)
+        })
+        .then(response => {
+    if (!response.ok) {
+        return response.text().then(text => {
+            throw new Error(`API responded with status: ${response.status}. Message: ${text}`);
+        });
+    }
+    return response.json();
+})
+
+        .then(data => {
+            console.log('Response from save:', data);
+            if (data && data.results && data.results[0] && data.results[0].query_status) {
+                showAlert('Customer details updated successfully.');
+            } else {
+                console.error('Unexpected API response:', data);
+                showAlert('Failed to update details. Please check the console for more details.');
+            }
+        })
+        .catch(error => {
+            console.error('Error saving data:', error);
+            showAlert('An error occurred. Please try again.');
+        });
+    });
+
+    let logoutElement = document.getElementById('logout');
+    if(logoutElement) {
+        logoutElement.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Clear session storage
+            sessionStorage.removeItem('userEmail');
+            sessionStorage.removeItem('customerId');
+
+            // Redirect to /account.html
+            window.location.href = '/account.html';
+        });
+    }
+});
+
+      </script>
 
   </body>
 </html>

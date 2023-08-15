@@ -3,9 +3,9 @@
   <head>
     <script>
       (function() {
-        const userEmail = sessionStorage.getItem('empEmail');
+        const userEmail = sessionStorage.getItem('ownerEmail');
         if (!userEmail) {
-          window.location.href = '/agent_login.html';
+          window.location.href = '/owner_login.html';
         }
       })();
     </script>
@@ -26,14 +26,17 @@
   
           <ul class="header__menu" data-aos="fade-down">
             <li>
-              <a href="/agent_home.html">Home</a>
+              <a href="/owner_home.html">Home</a>
             </li>
             <li>
-              <a href="/agent_orders.html">Orders</a>
+              <a href="/owner_orders.html">Orders</a>
             </li>
             <li>
-              <a href="/agent_login.html" id="logout" class="nav-link">Logout</a>
+              <a href="/owner_new_orders.html">All new orders</a>
             </li>
+          <li>
+              <a href="/owner_login.html" id="logout" class="nav-link">Logout</a>
+          </li>
           </ul>
   
           <ul class="header__menu-mobile" data-aos="fade-down">
@@ -55,28 +58,30 @@
          
           <!-- Order details -->
           <div class="col-md-12">
-            <h2 style="color: #0099FF;">Completed Orders</h2>
+            <h2 style="color: #0099FF;">All New Orders</h2>
             <br>
               <table class="table">
                   <thead>
                   <tr>
                       <th scope="col">#Order ID</th>
                       <th scope="col">Date</th>
+                      <th scope="col">Item Count</th>
+                      <th scope="col">Address</th>
                       <th scope="col">Order Status</th>
+                      <th scope="col">View Order</th>
                   </tr>
                   </thead>
-                  <tbody id="orderTableBody">
+                  <tbody>
                   <!-- Repeat these rows as per your data -->
                   <tr>
                       <th scope="row">1</th>
                       <td>18 July 2023</td>
+                      <td>7</td>
+                      <td>123 Street, City</td>
                       <td>Delivered</td>
+                      <td>View</td>
                   </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>19 July 2023</td>
-                    <td>Delivered</td>
-                </tr>
+                  
                   <!-- Data rows end -->
                   </tbody>
               </table>
@@ -86,49 +91,65 @@
 
 
     <script async src="https://cdn.jsdelivr.net/npm/es-module-shims@1/dist/es-module-shims.min.js" crossorigin="anonymous"></script>
-    
-    <script type="module">
-      // Function to fetch the data from the API
-      async function getOrders() {
-        try {
-          const response = await fetch('http://127.0.0.1:5000/campus-laundry/cl_get_order_list', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              "order_status": "completed"
-            })
-          });
-          const data = await response.json();
-          populateTable(data.results);
-        } catch (error) {
-          console.error('An error occurred while fetching the data:', error);
-        }
+    <script type="importmap">
+    {
+      "imports": {
+        "@popperjs/core": "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js",
+        "bootstrap": "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.esm.min.js"
       }
-    
-      // Function to populate the table with the fetched data
-      function populateTable(orders) {
-        const tableBody = document.getElementById('orderTableBody');
-        tableBody.innerHTML = ''; // Clear previous data
-        orders.forEach((order, index) => {
-          const row = tableBody.insertRow();
-          const cellOrderID = row.insertCell(0);
-          const cellDate = row.insertCell(1);
-          const cellStatus = row.insertCell(2);
-          
-          cellOrderID.innerHTML = order.order_id;
-          cellDate.innerHTML = new Date(order.order_date).toLocaleDateString(); // Format the date
-          cellStatus.innerHTML = order.order_status;
-        });
-      }
-    
-      // Call the function to fetch data when the page loads
-      getOrders();
+    }
     </script>
-    
-    <script type="module">
-      import * as bootstrap from 'bootstrap'
+      <script type="module">
 
-      new bootstrap.Popover(document.getElementById('popoverButton'))
+document.addEventListener("DOMContentLoaded", function () {
+  // Fetch orders data from the API
+  fetch("http://127.0.0.1:5000/campus-laundry/cl_get_order_list", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "order_status": "pending"
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.header.status === 200 && data.results.length > 0) {
+      populateOrdersTable(data.results);
+    } else {
+      console.error('Error fetching orders:', data.header.error_message);
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+});
+
+function populateOrdersTable(orders) {
+  const tableBody = document.querySelector('.table tbody');
+
+  // Clear any previous rows
+  tableBody.innerHTML = "";
+
+  orders.forEach((order, index) => {
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+      <th scope="row">${order.order_id}</th>
+      <td>${new Date(order.order_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
+      <td>${order.items_count}</td>
+      <td>${order.address}</td>
+      <td>${order.order_status.charAt(0).toUpperCase() + order.order_status.slice(1)}</td>
+      <td><a href="owner_order_details.html?customerId=${order.customer_id}&orderId=${order.order_id}">View</a></td>
+    `;
+
+    tableBody.appendChild(tr);
+  });
+}
+
+
+
+
     </script>
     <script type="module">
       let logoutElement = document.getElementById('logout');
@@ -138,13 +159,13 @@
               e.preventDefault();
   
               // Clear local storage
-              localStorage.removeItem('empEmail');
+              localStorage.removeItem('ownerEmail');
   
               // Clear session storage
-              sessionStorage.removeItem('empEmail');
+              sessionStorage.removeItem('ownerEmail');
   
               // Redirect to /account.html
-              window.location.href = '/agent_login.html';
+              window.location.href = '/owner_login.html';
           });
       }
     </script>

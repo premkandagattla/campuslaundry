@@ -1,6 +1,14 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script>
+      (function() {
+        const userEmail = sessionStorage.getItem('empEmail');
+        if (!userEmail) {
+          window.location.href = '/agent_login.html';
+        }
+      })();
+    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
@@ -18,13 +26,13 @@
   
           <ul class="header__menu" data-aos="fade-down">
             <li>
-              <a href="/">Home</a>
+              <a href="/agent_home.html">Home</a>
             </li>
             <li>
-              <a href="">Orders</a>
+              <a href="/agent_orders.html">Orders</a>
             </li>
             <li>
-              <a href="">Logout</a>
+              <a href="/agent_login.html" id="logout" class="nav-link">Logout</a>
             </li>
           </ul>
   
@@ -44,61 +52,239 @@
         <br>
         <br>
         
-          <!-- code here -->
-          <div class="card shadow-lg p-3 mb-5 bg-white rounded">
-            <div class="card-body">
-              <h5 class="card-title text-center">Order Status</h5>
-              <form>
-                <div class="mb-3">
-                  <label for="orderId" class="form-label">Order ID</label>
-                  <input type="text" class="form-control" id="orderId" value="#001" disabled>
-                </div>
-                <div class="mb-3">
-                  <label for="customerName" class="form-label">Customer Name</label>
-                  <input type="text" class="form-control" id="customerName" value="Dinesh" disabled>
-                </div>
-                <div class="mb-3">
-                  <label for="orderDetails" class="form-label">Order Details</label>
-                  <select class="form-select" id="orderDetails">
-                    <option selected>3 Items</option>
-                    <option value="1">Shirt</option>
-                    <option value="2">Jacket</option>
-                    <option value="1">Pant</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                  <label for="address" class="form-label">Address</label>
-                  <textarea class="form-control" id="address" rows="3" disabled>339, King St N, Waterloo</textarea>
-                </div>
-                <div class="mb-3">
-                  <label for="orderStatus" class="form-label">Order Status</label>
-                  <select class="form-select" id="orderStatus">
-                    <option selected>Order received</option>
-                    <option value="1">Picked Up</option>
-                    <option value="2">Out for delivery</option>
-                    <option value="3">Delivered</option>
-                  </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </form>
-            </div>
+        <div class="card shadow-lg p-3 mb-5 bg-white rounded">
+          <div class="card-body">
+            <h5 class="card-title text-center">Order Status</h5>
+            <form id="orderForm">
+              <div class="mb-3">
+                <label for="orderId" class="form-label">Order ID</label>
+                <input type="text" class="form-control" id="orderId" value="#001" disabled>
+              </div>
+              <div class="mb-3">
+                <label for="customerId" class="form-label">Customer ID</label>
+                <input type="text" class="form-control" id="customerId" disabled>
+              </div>
+              <div class="mb-3">
+                <label for="orderDetails" class="form-label">Order Details</label>
+                <select class="form-select" id="orderDetails">
+                  <option selected>5 Items</option>
+                  <option value="1">Shirt</option>
+                  <option value="2">Jacket</option>
+                  <option value="1">Pant</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                <textarea class="form-control" id="address" rows="3" disabled>339, King St N, Waterloo</textarea>
+              </div>
+              <div class="mb-3">
+                <label for="orderStatus" class="form-label">Order Status</label>
+                <select class="form-select" id="orderStatus">
+                  <option selected>Order received</option>
+                  <option value="1">Picked Up</option>
+                  <option value="4">Out for delivery</option>
+                  <option value="5">Delivered</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
           </div>
-        
-      </div>
+        </div>
+      
+    </div>
 
-    <script async src="https://cdn.jsdelivr.net/npm/es-module-shims@1/dist/es-module-shims.min.js" crossorigin="anonymous"></script>
-    <script type="importmap">
-    {
-      "imports": {
-        "@popperjs/core": "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js",
-        "bootstrap": "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.esm.min.js"
-      }
+  <script async src="https://cdn.jsdelivr.net/npm/es-module-shims@1/dist/es-module-shims.min.js" crossorigin="anonymous"></script>
+  <script type="importmap">
+  {
+    "imports": {
+      "@popperjs/core": "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js",
+      "bootstrap": "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.esm.min.js"
     }
+  }
+  </script>
+  <script type="module">
+  document.addEventListener("DOMContentLoaded", function() {
+const urlParams = new URLSearchParams(window.location.search);
+const customerId = parseInt(urlParams.get('customerId'));
+const orderId = parseInt(urlParams.get('orderId'));
+
+fetchOrderDetails(customerId, orderId);
+
+
+document.getElementById('orderForm').addEventListener('submit', function (event) {
+              event.preventDefault(); // Prevent the form from actually submitting
+
+              const statusDropdown = document.getElementById('orderStatus');
+              const selectedStatusValue = statusDropdown.value;
+
+              updateOrderStatus(selectedStatusValue);
+          });
+      });
+
+function fetchOrderDetails(customerId, orderId) {
+fetch('http://127.0.0.1:5000/campus-laundry/cl_get_customer_order_by_order_id', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "customer_id": customerId,
+    "order_id": orderId
+  })
+})
+.then(response => {
+  if (!response.ok) {
+    return response.text().then(text => {
+      throw new Error(`Server responded with ${response.status}: ${text}`);
+    });
+  }
+  return response.json();
+})
+.then(data => {
+  populateFormWithOrderDetails(data.results[0]);
+  return data.results[0];
+})
+.then(order => {
+  return fetchAddress(order.customer_id, order.order_id);
+})
+.catch(error => {
+  console.error('Error fetching the order details:', error);
+});
+}
+
+function fetchAddress(customerId, orderId) {
+fetch('http://127.0.0.1:5000/campus-laundry/cl_get_order_list', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "order_status": "pending"
+  })
+})
+.then(response => response.json())
+.then(data => {
+  const orderWithAddress = data.results.find(order => order.customer_id === customerId && order.order_id === orderId);
+  if (orderWithAddress) {
+    document.getElementById('address').value = orderWithAddress.address;
+  }
+})
+.catch(error => {
+  console.error('Error fetching the address:', error);
+});
+}
+
+function populateFormWithOrderDetails(order) {
+// product list
+const products = [
+{ name: 'Shirt', image: 'assets/shirt.png', load: 10, price: 2, product_id: 1 },
+{ name: 'T-Shirt', image: 'assets/polo.png', load: 10, price: 2, product_id: 2 },
+{ name: 'Pant', image: 'assets/pants.png', load: 10, price: 2, product_id: 3 },
+{ name: 'Shorts', image: 'assets/shorts.png', load: 6, price: 1.5, product_id: 4 },
+{ name: 'Dress', image: 'assets/dress.png', load: 14, price: 3, product_id: 5 },
+{ name: 'Skirt', image: 'assets/skirt.png', load: 14, price: 3, product_id: 6 },
+{ name: 'Jeans', image: 'assets/jeans.png', load: 14, price: 3, product_id: 7 },
+{ name: 'Jacket', image: 'assets/jacket.png', load: 20, price: 5, product_id: 8 },
+{ name: 'Socks', image: 'assets/socks.png', load: 4, price: 0.7, product_id: 9 }
+];
+
+document.getElementById('orderId').value = order.order_id;
+  document.getElementById('customerId').value = order.customer_id;
+
+  let totalItems = 0;
+  let orderDetailsDropdown = document.getElementById('orderDetails');
+  orderDetailsDropdown.innerHTML = "";
+
+  order.laundry_items.forEach(item => {
+      if (item.quantity > 0) {
+          totalItems += item.quantity;
+          const productName = products.find(p => p.product_id === item.product_id)?.name || 'Unknown Item';
+          const option = document.createElement('option');
+          option.value = item.product_id;
+          option.text = `${productName} (${item.quantity})`;
+          orderDetailsDropdown.appendChild(option);
+      }
+  });
+
+  const option = document.createElement('option');
+  option.text = `${totalItems} Items`;
+  option.selected = true;
+  orderDetailsDropdown.insertBefore(option, orderDetailsDropdown.firstChild);
+
+  
+
+  // Add pickup_date and pickup_time
+  const pickupOption = document.createElement('option');
+  pickupOption.text = `Pickup Date & Time: ${order.pickup_details.pickup_date} ${order.pickup_details.pickup_time}`;
+  orderDetailsDropdown.appendChild(pickupOption);
+}
+function getOrderStatusString(statusValue) {
+          switch (statusValue) {
+              case '1':
+                  return "pickup";
+              case '2':
+                  return "wash";
+              case '3':
+                  return "iron";
+              case '4':
+                  return "out-for-delivery";
+              case '5':
+                  return "completed";
+              default:
+                  return "";
+          }
+      }
+
+      function updateOrderStatus(selectedStatusValue) {
+          const statusString = getOrderStatusString(selectedStatusValue);
+          const customerId = document.getElementById('customerId').value;
+          const orderId = document.getElementById('orderId').value;
+
+          fetch('http://127.0.0.1:5000/campus-laundry/cl_set_order_status', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                  "customer_id": parseInt(customerId, 10),
+                  "order_id": parseInt(orderId, 10),
+                  "order_status": statusString
+              })
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.header.status === 200 && data.results[0].query_status) {
+                  alert("Order updated successfully");
+              } else {
+                  alert("Failed to update order. Please try again later.");
+              }
+          })
+          .catch(error => {
+              console.error('Error updating the order status:', error);
+              alert("Failed to update order. Please try again later.");
+          });
+      }
+
+
+
     </script>
     <script type="module">
-      import * as bootstrap from 'bootstrap'
-
-      new bootstrap.Popover(document.getElementById('popoverButton'))
+      let logoutElement = document.getElementById('logout');
+  
+      if(logoutElement) {
+          logoutElement.addEventListener('click', function(e) {
+              e.preventDefault();
+  
+              // Clear local storage
+              localStorage.removeItem('empEmail');
+  
+              // Clear session storage
+              sessionStorage.removeItem('empEmail');
+  
+              // Redirect to /account.html
+              window.location.href = '/agent_login.html';
+          });
+      }
     </script>
   </body>
 </html>

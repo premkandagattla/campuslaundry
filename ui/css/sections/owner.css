@@ -1,0 +1,80 @@
+h2 {
+    color: #0099FF;
+    margin-bottom: 30px;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+}
+
+.card-title {
+    font-weight: 600;
+}
+
+.card-text {
+    font-size: 1.25em;
+}
+
+
+/* Table */
+.table {
+width: 100%;
+margin-bottom: 1rem;
+color: #212529;
+border-collapse: separate;
+border-spacing: 0 15px;
+}
+
+.table th,
+.table td {
+padding: 0.75rem;
+vertical-align: top;
+border-top: none; /* remove the border */
+}
+
+.table thead th {
+vertical-align: bottom;
+border-bottom: none; /* remove the border */
+background-color: #0099FF;
+color: white;
+font-weight: 500;
+}
+
+.table tbody + tbody {
+border-top: none; /* remove the border */
+}
+
+/* Remove default Bootstrap table border */
+.table-bordered th, 
+.table-bordered td {
+border: none;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+background-color: rgba(0,0,0,.05);
+}
+
+tr td:first-child,
+tr th:first-child {
+border-top-left-radius: 10px;
+border-bottom-left-radius: 10px;
+}
+
+tr td:last-child,
+tr th:last-child {
+border-top-right-radius: 10px;
+border-bottom-right-radius: 10px;
+}
+
+.pagination-wrapper {
+    margin-top: 20px;
+}

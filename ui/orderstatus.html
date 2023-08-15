@@ -2,6 +2,14 @@
 <html lang="en">
 
 <head>
+  <script>
+    (function() {
+      const userEmail = sessionStorage.getItem('userEmail');
+      if (!userEmail) {
+        window.location.href = '/account.html';
+      }
+    })();
+  </script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -10,60 +18,6 @@
   <link rel="stylesheet" href="css/style.css">
   <title>Campus Laundry</title>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <style>
-    .timeline {
-      position: relative;
-      margin-top: 50px;
-      margin-left: 30px;
-    }
-
-    .timeline::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      width: 2px;
-      background-color: #000;
-    }
-
-    .timeline-item {
-      position: relative;
-      padding-bottom: 30px;
-    }
-
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      top: 15px;
-      left: -7px;
-      width: 15px;
-      height: 15px;
-      background-color: #007bff;
-      border: 2px solid #000;
-      border-radius: 50%;
-    }
-
-    .timeline-item.active::before {
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-        0% {
-        box-shadow: 0 0 0 0 rgba(0, 123, 255, 1);
-      }
-      70% {
-        box-shadow: 0 0 0 15px rgba(0, 123, 255, 0);
-      }
-      100% {
-        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
-      }
-    }
-
-    .timeline-content {
-      padding-left: 20px;
-    }
-  </style>
 
 </head>
 
@@ -77,19 +31,19 @@
 
       <ul class="header__menu" data-aos="fade-down">
         <li>
-          <a href="/">Home</a>
+          <a href="/user_home.html">Home</a>
         </li>
         <li>
-          <a href="/#menu">Membership</a>
+          <a href="/profile.html">Profile</a>
         </li>
         <li>
-          <a href="/#food">WHY US</a>
+          <a href="/my_orders.html">Orders</a>
         </li>
         <li>
-          <a href="/#services">CONTACT US</a>
+          <a href="/address.html">Address Book</a>
         </li>
         <li>
-          <a href="">Login</a>
+          <a href="/account.html" id="logout" class="nav-link">Logout</a>
         </li>
       </ul>
 
@@ -110,7 +64,16 @@
     <br>
     <div class="container text-center">
 
-      <br><br>
+      <br>
+      <div class="alert-msg-pay"></div>
+      <br>
+      <h2 class="text-start" style="color: #0099FF;">Order List</h2>
+      <div class="row">
+        <div class="order-details">
+            <!-- Filled dynamically using JavaScript -->
+        </div>
+    </div>
+<br>      
       <div class="row align-items-start">
         <div class="col-5">
           <div class="card" style="background-color: rgb(247, 247, 247); overflow: visible;">
@@ -124,40 +87,40 @@
                 <br>
               <h4 class="card-title" style="text-align: center;">Order Status</h4> 
               <div class="timeline">
-                <div class="timeline-item active">
+                <div class="timeline-item">
                   <div class="timeline-content">
                     <h6>Order Placed</h6>
-                    <p>Order placed on July 7, 2023</p>
+                    <p>Your order is placed successfully</p>
                   </div>
                 </div>
                 <div class="timeline-item">
                   <div class="timeline-content">
                     <h6>Pickup</h6>
-                    <p>Order picked up, not yet done</p>
+                    <p>Order picked up</p>
                   </div>
                 </div>
                 <div class="timeline-item">
                   <div class="timeline-content">
                     <h6>Wash</h6>
-                    <p>Clothes washed, not yet done</p>
+                    <p>Clothes washed</p>
                   </div>
                 </div>
                 <div class="timeline-item">
                   <div class="timeline-content">
                     <h6>Iron</h6>
-                    <p>Clothes ironed, not yet done</p>
+                    <p>Clothes ironed</p>
                   </div>
                 </div>
                 <div class="timeline-item">
                   <div class="timeline-content">
                     <h6>Dispatch</h6>
-                    <p>Order dispatched,not yet done</p>
+                    <p>Order dispatched</p>
                   </div>
                 </div>
                 <div class="timeline-item">
                   <div class="timeline-content">
                     <h6>Delivered</h6>
-                    <p>Order delivered, not yet done</p>
+                    <p>Order delivered</p>
                   </div>
                 </div>
               </div>
@@ -170,6 +133,222 @@
     </div>
 
   </div>
+  <script>
+    // Extract customerId and orderId from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const customerId = parseInt(urlParams.get('customerId'), 10);
+    const orderId = parseInt(urlParams.get('orderId'), 10);
+
+const payValue = urlParams.get('pay') || 0;
+
+// Check if pay parameter is equal to 'dkpsa'
+if (payValue === 'dkpsa') {
+    // Now you can make a POST request to update the payment status
+    const apiUrl = 'http://127.0.0.1:5000/campus-laundry/cl_set_payment_status';
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+    const data = {
+        "customer_id": customerId,
+        "order_id": orderId,
+        "payment_status": "success"
+    };
+
+    fetch(apiUrl, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Payment status updated:", data);
+    })
+    .catch(error => console.error('Error updating payment status:', error));
+}
+
+if(payValue === 'dkpsa'){
+  urlParams.delete('pay');
+        const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?${urlParams.toString()}`;
+        window.history.replaceState({}, '', newUrl);
+}
+
+  
+
+
+async function getOrderDetails() {
+  try {
+    const response = await fetch('http://127.0.0.1:5000/campus-laundry/cl_get_customer_order_by_order_id', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        customer_id: customerId,
+        order_id: orderId
+      })
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching order details:', error);
+  }
+}
+
+async function renderOrderDetails() {
+  const data = await getOrderDetails();
+
+  if (data.header.status !== 200) {
+    console.error('Failed to retrieve data:', data.header.error_message);
+    return;
+  }
+
+  const order = data.results[0];
+  
+  if (order.payment_status === "pending") {
+    const alertDiv = document.querySelector('.alert-msg-pay');
+    alertDiv.classList.add("alert", "alert-warning");
+    alertDiv.textContent = "Payment is pending!  ";
+// Adding a payment button below the message
+const paymentBtn = document.createElement('button');
+paymentBtn.className = 'btn btn-primary';
+paymentBtn.style.marginTop = '10px'; // Add 10px padding-top
+paymentBtn.textContent = 'Make Payment';
+paymentBtn.addEventListener('click', initiatePayment);
+
+// Insert the payment button immediately after the alertDiv
+alertDiv.insertAdjacentElement('afterend', paymentBtn);
+
+}
+
+
+
+  const orderStatuses = [
+    "created", "pickup", "wash", "iron", "out-for-delivery", "completed"
+  ];
+
+  let foundStatus = false;
+  orderStatuses.forEach((status, index) => {
+    const element = document.querySelector(`.timeline .timeline-item:nth-child(${index + 1})`);
+
+    if (foundStatus) {
+      element.classList.add('grayed-out');
+    }
+
+    if (status === order.order_status) {
+      element.classList.add('active');
+      foundStatus = true;
+    }
+  });
+
+  renderLaundryItems(order.laundry_items);
+}
+
+function initiatePayment() {
+    fetch('http://127.0.0.1:5000/campus-laundry/cl_get_customer_order_by_order_id', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            customer_id: customerId, 
+            order_id: orderId  
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        
+        const laundryItems = data.results[0].laundry_items;
+        const fetchedOrderId = data.results[0].order_id; 
+        const totalPrice = products.reduce((sum, product) => {
+            const item = laundryItems.find(i => i.product_id === product.product_id);
+            if (item) {
+                sum += item.price * item.quantity;
+            }
+            return sum;
+        }, 0);
+
+        return fetch('http://localhost:4242/process-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                totalPrice: totalPrice,
+                orderId: fetchedOrderId, 
+                customerId: customerId,
+            })
+        });
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sessionUrl) {
+            window.location.href = data.sessionUrl;
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// product list
+const products = [
+  { name: 'Shirt', image: 'assets/shirt.png', load: 10, price: 2, product_id: 1 },
+  { name: 'T-Shirt', image: 'assets/polo.png', load: 10, price: 2, product_id: 2 },
+  { name: 'Pant', image: 'assets/pants.png', load: 10, price: 2, product_id: 3 },
+  { name: 'Shorts', image: 'assets/shorts.png', load: 6, price: 1.5, product_id: 4 },
+  { name: 'Dress', image: 'assets/dress.png', load: 14, price: 3, product_id: 5 },
+  { name: 'Skirt', image: 'assets/skirt.png', load: 14, price: 3, product_id: 6 },
+  { name: 'Jeans', image: 'assets/jeans.png', load: 14, price: 3, product_id: 7 },
+  { name: 'Jacket', image: 'assets/jacket.png', load: 20, price: 5, product_id: 8 },
+  { name: 'Socks', image: 'assets/socks.png', load: 4, price: 0.7, product_id: 9 }
+];
+function renderLaundryItems(laundryItems) {
+    const container = document.querySelector('.order-details');
+    laundryItems.forEach(item => {
+        if (item.quantity > 0) {
+            const product = products.find(p => p.product_id === item.product_id);
+            const div = document.createElement('div');
+            div.className = 'col-md-1';
+            div.innerHTML = `
+                <div class="order-item-card">
+                    <img src="${product.image}" alt="${product.name}">
+                    <div class="order-item-card-content">
+                        <h5>${product.name}</h5>
+                        <p>Quantity ${item.quantity}</p>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+    });
+}
+// call the function on page load to render laundry items
+window.addEventListener('DOMContentLoaded', renderLaundryItems);
+
+
+// Call the function on page load
+window.addEventListener('DOMContentLoaded', renderOrderDetails);
+
+  </script>
+  
+  <script type="module">
+      let logoutElement = document.getElementById('logout');
+  
+      if(logoutElement) {
+          logoutElement.addEventListener('click', function(e) {
+              e.preventDefault();
+  
+              // Clear local storage
+              localStorage.removeItem('userEmail');
+              localStorage.removeItem('customerId');
+  
+              // Clear session storage
+              sessionStorage.removeItem('userEmail');
+              sessionStorage.removeItem('customerId');
+  
+              // Redirect to /account.html
+              window.location.href = '/account.html';
+          });
+      }
+  </script>
+  
 </body>
 
 </html>

@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script>
+      (function() {
+        const userEmail = sessionStorage.getItem('userEmail');
+        if (!userEmail) {
+          window.location.href = '/account.html';
+        }
+      })();
+    </script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="icon" type="image/png" href="/logo-sm.png" />
+    <link rel="stylesheet" href="css/style.css">
+    <title>Campus Laundry</title>
+  </head>
+  <body>
+    <header>
+        <nav class="header__nav">
+          <div class="header__logo">
+            <img src="assets/Logo.png" alt="logo" />
+            <div class="header__logo-overlay"></div>
+          </div>
+  
+          <ul class="header__menu" data-aos="fade-down">
+            <li>
+              <a href="/user_home.html">Home</a>
+            </li>
+            <li>
+              <a href="/profile.html">Profile</a>
+            </li>
+            <li>
+                <a href="/my_orders.html">Orders</a>
+              </li>
+            <li>
+              <a href="/address.html">Address Book</a>
+            </li>
+            <li>
+              <a href="/account.html" id="logout" class="nav-link">Logout</a>
+            </li>
+          </ul>
+  
+          <ul class="header__menu-mobile" data-aos="fade-down">
+            <li>
+              <img src="/assets/menu.svg" alt="menu" />
+            </li>
+          </ul>
+        </nav>
+      </header>
+      <br>
+      <br>
+      <div class="container-fluid">
+        <div class="div">
+            <img src="assets/Trees-Pattern.png" class="img-fluid" alt="img">
+        </div>
+        <br>
+        <br>
+        <h2 style="color: #0099FF;">My Orders</h2>
+
+        <div class="container text-center">
+            
+        
+
+        </div>
+      </div>
+
+    <script async src="https://cdn.jsdelivr.net/npm/es-module-shims@1/dist/es-module-shims.min.js" crossorigin="anonymous"></script>
+    <script type="importmap">
+    {
+      "imports": {
+        "@popperjs/core": "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js",
+        "bootstrap": "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.esm.min.js"
+      }
+    }
+    </script>
+    <script type="module">
+       document.addEventListener("DOMContentLoaded", function() {
+    
+    function formatDateToTorontoTime(dateString) {
+        const options = {
+            timeZone: "America/Toronto",
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric'
+        };
+        
+        const dateObj = new Date(dateString);
+        return dateObj.toLocaleDateString('en-US', options);
+    }
+
+    function fetchOrders() {
+        const customerId = sessionStorage.getItem('customerId');
+        if (!customerId) {
+            console.error("Customer ID not found in session storage");
+            return;
+        }
+
+        fetch('http://127.0.0.1:5000/campus-laundry/cl_get_customer_orders_history', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ customer_id: parseInt(customerId) })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.header.error_code !== 0) {
+                throw new Error(data.header.error_message);
+            }
+            createOrdersTable(data.results);
+        })
+        .catch(error => {
+            console.error("Failed to fetch orders:", error);
+        });
+    }
+
+    function createOrdersTable(orders) {
+    const container = document.querySelector('.container.text-center');
+
+    const table = document.createElement('table');
+    table.className = 'table-custom'; 
+
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+
+    // Create headers
+    const headers = ["Order ID", "Item Count", "Order Date", "Payment Status", "Order Status"];
+    const headerRow = document.createElement('tr');
+    headers.forEach(header => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    
+    // Add orders to table body
+    orders.forEach(order => {
+        const row = document.createElement('tr');
+        
+        const orderIDCell = document.createElement('td');
+        orderIDCell.textContent = order.order_id;
+        row.appendChild(orderIDCell);
+
+        const itemCountCell = document.createElement('td');
+        itemCountCell.textContent = order.items_count;
+        row.appendChild(itemCountCell);
+
+        const orderDateCell = document.createElement('td');
+        const localDate = new Date(order.order_date).toLocaleString('en-US', { timeZone: 'America/Toronto', month: 'long', day: 'numeric', year: 'numeric' });
+        orderDateCell.textContent = localDate;
+        row.appendChild(orderDateCell);
+
+        const paymentStatusCell = document.createElement('td');
+        paymentStatusCell.textContent = order.payment_status;
+
+        if (order.payment_status === "pending") {
+            paymentStatusCell.classList.add('status-pending');
+        } else if (order.payment_status === "success") {
+            paymentStatusCell.classList.add('status-success');
+        }
+        row.appendChild(paymentStatusCell);
+
+        const orderStatusCell = document.createElement('td');
+        const orderLink = document.createElement('a');
+        orderLink.textContent = "View Order";
+        orderLink.href = `orderstatus.html?customerId=${order.customer_id}&orderId=${order.order_id}`;
+        orderLink.classList.add('table-link');
+        orderStatusCell.appendChild(orderLink);
+        row.appendChild(orderStatusCell);
+
+        tbody.appendChild(row);
+    });
+
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    container.appendChild(table);
+}
+
+
+    fetchOrders();
+});
+
+  
+      let logoutElement = document.getElementById('logout');
+
+      if(logoutElement) {
+          logoutElement.addEventListener('click', function(e) {
+              e.preventDefault();
+
+              // Clear local storage
+              localStorage.removeItem('userEmail');
+              localStorage.removeItem('customerId');
+
+              // Clear session storage
+              sessionStorage.removeItem('userEmail');
+              sessionStorage.removeItem('customerId');
+
+              // Redirect to /account.html
+              window.location.href = '/account.html';
+          });
+      }
+    </script>
+  </body>
+</html>

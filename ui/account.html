@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script>
+      (function() {
+        const userEmail = sessionStorage.getItem('userEmail');
+        if (userEmail) {
+          window.location.href = '/user_home.html';
+        }
+      })();
+    </script>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/logo-sm.png" />
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
     <title>Campus Laundry</title>
     <style>
       input[type='radio'] {
@@ -25,9 +34,7 @@
           <li>
             <a href="/">Home</a>
           </li>
-          <li>
-            <a href="/#menu">Membership</a>
-          </li>
+
           <li>
             <a href="/#food">WHY US</a>
           </li>
@@ -51,6 +58,12 @@
         <div class="hero-image">
             <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_dn6rwtwl.json"  background="transparent"  speed="1"  style="padding-top:300px; width: 700px; height: 700px;"  loop autoplay></lottie-player>          <div class="hero-image__overlay"></div>
         </div>
+        <div id="alert-box" class="alert alert-warning alert-dismissible fade show" role="alert" style="display: none">
+          <strong id="alert-text"></strong>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="document.getElementById('alert-box').style.display = 'none'"></button>
+        </div>
+        <div id="alertBox" class="alert" role="alert" style="display: none;"></div>
+
   
         <div class="hero-content-account">
             <div class="wrapper">
@@ -142,6 +155,7 @@
 
     </footer>
 
+    
     <script src="/js/script.js" type="module"></script>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <script>
@@ -165,6 +179,13 @@
      </script>
 
      <script>
+      function showAlert(message) {
+        let alertBox = document.getElementById('alert-box');
+        let alertText = document.getElementById('alert-text');
+
+        alertText.innerHTML = message;
+        alertBox.style.display = 'block';
+      }
     
     function loginUser(event) {
   event.preventDefault();
@@ -192,25 +213,37 @@
     .then(data => {
       const queryStatus = data.results[0].query_status;
       if (queryStatus) {
-        ​const apiUrlGCD = 'http://127.0.0.1:5000/campus-laundry/cl_get_customer_details';
-        fetch(apiUrlGCD, {
+        
+        // Create session and local storage for customer_id and user email
+        sessionStorage.setItem('userEmail', email);
+        localStorage.setItem('userEmail', email);
+
+        // Get user id from email
+        const customerDetailsUrl = 'http://127.0.0.1:5000/campus-laundry/cl_get_customer_details';
+        const customerDetailsData = {
+          email: email
+        };
+
+        fetch(customerDetailsUrl, {
           method: 'POST',
           headers: headers,
-          body: JSON.stringify(data)
+          body: JSON.stringify(customerDetailsData)
         })
-        .then(response => response.json())
-        .then(data => {
-          const queryStatus = data.results[0].query_status;
-      if (queryStatus) {
-        sessionStorage.setItem("username", data.results[0]);
-        localStorage.setItem("username", data.results[0]);
-        window.location.href = "/user_home.html";
-      }
-        }).catch(error => {
-      console.error('Login error:', error);
-      alert('An error occurred during login. Please try again.');
-    });
-        
+          .then(response => response.json())
+          .then(data => {
+            const customerId = data.results[0].customer_id;
+
+            // Store the customer id in session and local storage
+            sessionStorage.setItem('customerId', customerId);
+            localStorage.setItem('customerId', customerId);
+
+            // Redirect to user home
+            window.location.assign('/user_home.html');
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+          });
       } else {
         const message = data.results[0].message;
         if (message === 'Email not found') {
@@ -222,11 +255,12 @@
     })
     .catch(error => {
       console.error('Login error:', error);
-      alert('An error occurred during login. Please try again.');
+      showAlert('An error occurred during login. Please try again.');
     });
 
   return false; // Prevent form submission
 }
+
 
 
     function registerUser(event) {
@@ -251,13 +285,12 @@
           phone_number: phone,
         };
 
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/'; // Proxy server URL
         const url = 'http://127.0.0.1:5000/campus-laundry/cl_set_customer_registration';
         const headers = {
           'Content-Type': 'application/json'
         };
 
-        fetch(url, {  // Prepend the proxy server URL to the API endpoint
+        fetch(url, {  
           method: 'POST',
           headers: headers,
           body: JSON.stringify(data)
@@ -272,7 +305,7 @@
           })
           .catch(error => {
             console.error('Registration error:', error);
-            alert('An error occurred during registration. Please try again.');
+          showAlert('An error occurred during registration. Please try again.');
           });
 
         return false; // Prevent form submission
@@ -280,6 +313,8 @@
 
      </script>
      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.2.3/js/bootstrap.min.js"></script>
      <!-- <script type="module" src="js/api.js"></script> -->
   </body>
 </html>

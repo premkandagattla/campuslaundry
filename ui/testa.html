@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <script>
+    (function() {
+      const userEmail = sessionStorage.getItem('userEmail');
+      if (!userEmail) {
+        window.location.href = '/account.html';
+      }
+    })();
+  </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/logo-sm.png" />
+  <link rel="stylesheet" href="css/style.css">
+  <title>Campus Laundry</title>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    .custom-label {
+      color: #4A5667;
+      font-size: 24px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav class="header__nav">
+      <div class="header__logo">
+        <img src="assets/Logo.png" alt="logo" />
+        <div class="header__logo-overlay"></div>
+      </div>
+
+      <ul class="header__menu" data-aos="fade-down">
+        <li>
+          <a href="/user_home.html">Home</a>
+        </li>
+        <li>
+          <a href="/profile.html">Profile</a>
+        </li>
+        <li>
+          <a href="/address.html">Address Book</a>
+        </li>
+        <li>
+          <a href="/account.html" id="logout" class="nav-link">Logout</a>
+        </li>
+      </ul>
+
+      <ul class="header__menu-mobile" data-aos="fade-down">
+        <li>
+          <img src="/assets/menu.svg" alt="menu" />
+        </li>
+      </ul>
+    </nav>
+  </header>
+  <br>
+  <br>
+  <div class="container-fluid">
+    <div class="div">
+      <img src="assets/Trees-Pattern.png" class="img-fluid" alt="img">
+    </div>
+    <br>
+    <br>
+    <div class="container text-center">
+
+      <br>
+      <div class="alert alert-warning d-none" role="alert" id="alertMessage">
+        Please select all the machine settings before proceeding.
+      </div>
+      <br>
+      <div class="row align-items-start">
+        <div class="col-5">
+          <div class="card" style="background-color: rgb(247, 247, 247);">
+            <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+            <lottie-player src="https://lottie.host/f53533c5-2b9d-41ae-ac01-88e803ab99a1/ATHdvv7SIO.json"
+              background="transparent" speed="1" style="width: 500px; height: 600px;" loop autoplay></lottie-player>
+          </div>
+        </div>
+        
+        
+        <div class="col-7">
+          <div class="card" style="background-color: rgb(247, 247, 247);">
+            <div class="card-body">
+              <h3 class="card-title">Machine Settings</h3> <br><br>
+              <h5 class="card-text custom-label">Wash Type</h5>
+
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="washType" id="washTypeNormal" value="option1">
+                <label class="form-check-label" for="washTypeNormal">Normal</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="washType" id="washTypeCasual" value="option2">
+                <label class="form-check-label" for="washTypeCasual">Casual</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="washType" id="washTypeHeavy" value="option3">
+                <label class="form-check-label" for="washTypeHeavy">Heavy</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="washType" id="washTypeDelicate" value="option4">
+                <label class="form-check-label" for="washTypeDelicate">Delicate</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="washType" id="washTypeDeepClean" value="option5">
+                <label class="form-check-label" for="washTypeDeepClean">Deep Clean</label>
+              </div>
+              <br><br>
+              <h5 class="card-text custom-label">Water Temperature</h5>
+
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="waterTemperature" id="waterTempCold" value="option1">
+                <label class="form-check-label" for="waterTempCold">Cold</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="waterTemperature" id="waterTempWarm" value="option2">
+                <label class="form-check-label" for="waterTempWarm">Warm</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="waterTemperature" id="waterTempHot" value="option3">
+                <label class="form-check-label" for="waterTempHot">Hot</label>
+              </div>
+              <br><br>
+              <h5 class="card-text custom-label">Spin Speed</h5>
+
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="spinSpeed" id="spinSpeedLow" value="option1">
+                <label class="form-check-label" for="spinSpeedLow">Low</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="spinSpeed" id="spinSpeedMedium" value="option2">
+                <label class="form-check-label" for="spinSpeedMedium">Medium</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="spinSpeed" id="spinSpeedHigh" value="option3">
+                <label class="form-check-label" for="spinSpeedHigh">High</label>
+              </div>
+            </div>
+            <br>
+          <a href="pickup.html" id="nextBtn">
+            <button type="button" class="btn btn-primary" style="width: 80%;margin-left: 8%;" disabled >Next</button>
+          </a>
+            <br><br>
+          </div>
+        </div>
+      </div>
+      <br><br>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    // Get all radio buttons related to Wash Type, Water Temperature, and Spin Speed
+    const washTypeRadios = document.querySelectorAll('input[name="washType"]');
+    const waterTempRadios = document.querySelectorAll('input[name="waterTemperature"]');
+    const spinSpeedRadios = document.querySelectorAll('input[name="spinSpeed"]');
+
+    // Get the Next button
+    const nextButton = document.getElementById('nextBtn');
+
+    // Function to check if all radio buttons are selected
+    function checkAllSelected() {
+      let allSelected =
+        Array.from(washTypeRadios).some(radio => radio.checked) &&
+        Array.from(waterTempRadios).some(radio => radio.checked) &&
+        Array.from(spinSpeedRadios).some(radio => radio.checked);
+
+      return allSelected;
+    }
+
+    // Add event listener to all radio buttons
+    washTypeRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        nextButton.disabled = !checkAllSelected();
+      });
+    });
+
+    waterTempRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        nextButton.disabled = !checkAllSelected();
+      });
+    });
+
+    spinSpeedRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        nextButton.disabled = !checkAllSelected();
+      });
+    });
+
+    nextButton.addEventListener('click', (e) => {
+      // Check if all settings are selected
+      if (!checkAllSelected()) {
+        e.preventDefault();  // Prevent navigation
+        document.getElementById('alertMessage').classList.remove('d-none');  // Show error message
+        return;
+      }
+
+      if (checkAllSelected()) {
+        document.getElementById('alertMessage').classList.add('d-none');
+      }
+
+
+      // Clear any previously stored settings
+      sessionStorage.removeItem('washType');
+      sessionStorage.removeItem('waterTemperature');
+      sessionStorage.removeItem('spinSpeed');
+
+      // Store the selected settings
+      const selectedWashType = Array.from(washTypeRadios).find(radio => radio.checked).value;
+      const selectedWaterTemp = Array.from(waterTempRadios).find(radio => radio.checked).value;
+      const selectedSpinSpeed = Array.from(spinSpeedRadios).find(radio => radio.checked).value;
+
+      sessionStorage.setItem('washType', selectedWashType);
+      sessionStorage.setItem('waterTemperature', selectedWaterTemp);
+      sessionStorage.setItem('spinSpeed', selectedSpinSpeed);
+    });
+
+  </script>
+  <script type="module">
+    let logoutElement = document.getElementById('logout');
+
+    if(logoutElement) {
+        logoutElement.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Clear local storage
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('customerId');
+
+            // Clear session storage
+            sessionStorage.removeItem('userEmail');
+            sessionStorage.removeItem('customerId');
+
+            // Redirect to /account.html
+            window.location.href = '/account.html';
+        });
+    }
+  </script>
+</body>
+
+</html>
